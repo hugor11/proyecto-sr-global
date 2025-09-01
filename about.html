@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-lang-key="titleAbout">Nosotros | SR Global Experiences</title>
+  <meta name="description" data-lang-key="metaAbout" content="Conoce a SR Global Experiences: filosofía, equipo, misión, visión y valores.">
+  <link rel="canonical" href="https://srglobalexperiences.com/about.html" />
+  <link rel="alternate" hreflang="es" href="https://srglobalexperiences.com/about.html" />
+  <link rel="alternate" hreflang="en" href="https://srglobalexperiences.com/about.html?lang=en" />
+  <link rel="icon" href="https://i.imgur.com/H57d5sD.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.min.css?v=1" />
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:site_name" content="SR Global Experiences">
+  <meta property="og:title" content="Nosotros | SR Global Experiences">
+  <meta property="og:description" content="Conoce nuestra historia, misión, visión y valores.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://srglobalexperiences.com/about.html">
+  <meta property="og:image" content="https://i.imgur.com/xCiA7V1.jpeg">
+  <meta property="og:image:alt" content="Equipo SR Global Experiences">
+  <meta property="og:locale" content="es_MX">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Nosotros | SR Global Experiences">
+  <meta name="twitter:description" content="Conoce nuestra historia, misión, visión y valores.">
+  <meta name="twitter:image" content="https://i.imgur.com/xCiA7V1.jpeg">
+  <meta name="twitter:image:alt" content="Equipo SR Global Experiences">
+
+  <!-- JSON-LD: AboutPage + Breadcrumbs -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    "name": "Nosotros",
+    "url": "https://srglobalexperiences.com/about.html",
+    "inLanguage": "es-MX",
+    "description": "Conoce nuestra historia, misión, visión y valores en SR Global Experiences.",
+    "isPartOf": {"@type": "WebSite", "name": "SR Global Experiences", "url": "https://srglobalexperiences.com/"}
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://srglobalexperiences.com/"},
+      {"@type": "ListItem", "position": 2, "name": "Nosotros", "item": "https://srglobalexperiences.com/about.html"}
+    ]
+  }
+  </script>
+</head>
+<body class="font-poppins bg-gray-50">
+  <!-- Navbar completa -->
+  <nav id="navbar" class="bg-white/80 backdrop-blur-lg shadow-md sticky top-0 z-50 transition-all duration-300">
+    <div class="container mx-auto px-6">
+      <div class="flex justify-between items-center py-3">
+        <a href="index.html" class="flex items-center gap-2">
+          <img src="https://i.imgur.com/H57d5sD.png" alt="Logo Pequeño SR" class="h-12">
+          <span class="font-bold text-brand-dark hidden sm:block">SR Global Experiences</span>
+        </a>
+        <div class="flex items-center">
+          <div class="hidden md:flex items-center space-x-6 text-gray-700 font-semibold">
+            <a href="index.html" class="hover:text-brand-orange transition-colors" data-lang-key="navHome">Inicio</a>
+            <a href="promotions.html" class="hover:text-brand-orange transition-colors" data-lang-key="navPromotions">Promociones</a>
+            <a href="experiences.html" class="hover:text-brand-orange transition-colors" data-lang-key="navExperiences">Experiencias</a>
+            <a href="romance.html" class="hover:text-brand-orange transition-colors" data-lang-key="navRomance">Romance</a>
+            <a href="destinations.html" class="hover:text-brand-orange transition-colors" data-lang-key="navDestinations">Destinos</a>
+            <a href="groups.html" class="hover:text-brand-orange transition-colors" data-lang-key="navGroups">Grupos y Convenciones</a>
+            <a href="about.html" class="hover:text-brand-orange transition-colors" data-lang-key="navAbout">Nosotros</a>
+          </div>
+          <div class="flex items-center ml-6">
+            <a href="contact.html" class="bg-brand-orange text-white font-bold py-2 px-5 rounded-lg hover:bg-opacity-90 transition-all hover:scale-105" data-lang-key="navContactBtn">Contactar</a>
+            <div class="ml-4 flex items-center space-x-2 text-sm font-bold text-gray-600">
+              <a href="#" class="cursor-pointer hover:text-brand-orange" onclick="switchLanguage('es')">ES</a>
+              <span class="text-gray-300">|</span>
+              <a href="#" class="cursor-pointer hover:text-brand-orange" onclick="switchLanguage('en')">EN</a>
+            </div>
+            <button id="menu-toggle" class="ml-4 text-gray-700 md:hidden focus:outline-none">
+              <i class="fas fa-bars text-2xl"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div id="mobile-menu" class="hidden md:hidden py-4 bg-white rounded-lg shadow-lg mt-2">
+        <div class="flex flex-col space-y-3 px-4">
+          <a href="index.html" class="py-2 px-4 hover:bg-gray-100 rounded-md hover:text-brand-orange transition-colors" data-lang-key="navHome">Inicio</a>
+          <a href="promotions.html" class="py-2 px-4 hover:bg-gray-100 rounded-md hover:text-brand-orange transition-colors" data-lang-key="navPromotions">Promociones</a>
+          <a href="experiences.html" class="py-2 px-4 hover:bg-gray-100 rounded-md hover:text-brand-orange transition-colors" data-lang-key="navExperiences">Experiencias</a>
+          <a href="romance.html" class="py-2 px-4 hover:bg-gray-100 rounded-md hover:text-brand-orange transition-colors" data-lang-key="navRomance">Romance</a>
+          <a href="destinations.html" class="py-2 px-4 hover:bg-gray-100 rounded-md hover:text-brand-orange transition-colors" data-lang-key="navDestinations">Destinos</a>
+          <a href="groups.html" class="py-2 px-4 hover:bg-gray-100 rounded-md hover:text-brand-orange transition-colors" data-lang-key="navGroups">Grupos y Convenciones</a>
+          <a href="about.html" class="py-2 px-4 hover:bg-gray-100 rounded-md hover:text-brand-orange transition-colors" data-lang-key="navAbout">Nosotros</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <section class="py-16 bg-gray-50">
+      <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+          <img src="https://i.imgur.com/k1mDOKv.jpeg" alt="Logo SR Global Experiences" class="h-28 mx-auto mb-6">
+          <h2 class="text-4xl md:text-5xl font-bold text-[#009688] mb-2" data-lang-key="aboutWhoTitle">¿QUIÉNES SOMOS?</h2>
+          <div class="w-24 h-1 bg-[#ff7043] mx-auto mt-4"></div>
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-8 mb-16">
+          <div class="md:w-2/3 bg-[#ff7043] rounded-xl shadow-lg overflow-hidden">
+            <div class="p-8 md:p-10 relative">
+              <div class="text-white text-lg">
+                <h3 class="text-2xl font-bold mb-6 flex items-center"><i class="fas fa-globe-americas mr-3"></i><span data-lang-key="aboutHistoryTitle">Nuestra Historia</span></h3>
+                <p class="mb-6" data-lang-key="aboutHistoryP1">Agentes de viaje apasionados por la organización de eventos, una profunda fascinación por los viajes y creadores de experiencias personalizadas en México y el mundo.</p>
+                <p class="mb-6" data-lang-key="aboutHistoryP2">SR Global Experiences nació por la pasión en conectar personas y crear experiencias extraordinarias.</p>
+                <p class="font-semibold" data-lang-key="aboutHistoryQuote">"Te ofrecemos un servicio integral y personalizado para hacer realidad tus sueños."</p>
+              </div>
+              <div class="hidden md:block absolute right-0 top-0 h-full w-1/6 bg-[#009688] clip-path-diagonal"></div>
+            </div>
+          </div>
+          <div class="md:w-1/3">
+            <div class="flex flex-col gap-4 h-full">
+              <div class="bg-white rounded-xl shadow-lg overflow-hidden flex-1">
+                <div class="p-6 text-center">
+                  <div class="flex justify-center mb-4">
+                    <div class="w-16 h-16 bg-[#ff7043] bg-opacity-10 rounded-full flex items-center justify-center"><i class="fas fa-handshake text-[#ff7043] text-3xl"></i></div>
+                  </div>
+                  <h4 class="text-xl font-bold mb-3" data-lang-key="aboutGuaranteeTitle">Satisfacción Garantizada</h4>
+                  <p class="text-gray-600" data-lang-key="aboutGuaranteeDesc">Nos comprometemos a superar tus expectativas en cada experiencia que diseñamos.</p>
+                </div>
+              </div>
+              <div class="bg-[#009688] rounded-xl shadow-lg p-6 flex-1">
+                <h3 class="text-xl font-bold mb-3 text-white" data-lang-key="aboutExcellenceTitle">Compromiso con la Excelencia</h3>
+                <p class="text-white" data-lang-key="aboutExcellenceDesc">Cada viaje es una oportunidad para superar expectativas y crear momentos inolvidables.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto mb-16">
+          <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all">
+            <div class="h-3 bg-[#009688]"></div>
+            <div class="p-8">
+              <div class="w-20 h-20 rounded-full bg-[#009688] bg-opacity-10 flex items-center justify-center mx-auto mb-6"><i class="fas fa-rocket text-[#009688] text-3xl"></i></div>
+              <h3 class="text-2xl font-bold text-[#009688] mb-6 text-center" data-lang-key="aboutMissionTitle">Misión:</h3>
+              <div class="bg-gray-50 p-6 rounded-lg"><p class="text-gray-700 text-lg leading-relaxed text-center font-medium" data-lang-key="aboutMissionDesc">Convertir sueños en experiencias de viaje inolvidables.</p></div>
+            </div>
+          </div>
+          <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all">
+            <div class="h-3 bg-[#ff7043]"></div>
+            <div class="p-8">
+              <div class="w-20 h-20 rounded-full bg-[#ff7043] bg-opacity-10 flex items-center justify-center mx-auto mb-6"><i class="fas fa-eye text-[#ff7043] text-3xl"></i></div>
+              <h3 class="text-2xl font-bold text-[#ff7043] mb-6 text-center" data-lang-key="aboutVisionTitle">Visión:</h3>
+              <div class="bg-gray-50 p-6 rounded-lg"><p class="text-gray-700 text-lg leading-relaxed text-center font-medium" data-lang-key="aboutVisionDesc">Crear historias únicas que inspiren, emocionen, conecten y permanezcan en la memoria de cada viajero.</p></div>
+            </div>
+          </div>
+          <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all">
+            <div class="h-3 bg-[#009688]"></div>
+            <div class="p-8">
+              <div class="w-20 h-20 rounded-full bg-[#009688] bg-opacity-10 flex items-center justify-center mx-auto mb-6"><i class="fas fa-medal text-[#009688] text-3xl"></i></div>
+              <h3 class="text-2xl font-bold text-[#009688] mb-6 text-center" data-lang-key="aboutValuesTitle">Valores:</h3>
+              <ul class="space-y-4">
+                <li class="flex items-center p-2 rounded-md hover:bg-gray-50 transition-colors"><div class="bg-[#ff7043] bg-opacity-10 rounded-full p-3 mr-3 flex-shrink-0"><i class="fas fa-heart text-[#ff7043] text-lg"></i></div><span class="text-gray-700 font-medium" data-lang-key="aboutValue1">Pasión por viajar</span></li>
+                <li class="flex items-center p-2 rounded-md hover:bg-gray-50 transition-colors"><div class="bg-[#ff7043] bg-opacity-10 rounded-full p-3 mr-3 flex-shrink-0"><i class="fas fa-star text-[#ff7043] text-lg"></i></div><span class="text-gray-700 font-medium" data-lang-key="aboutValue2">Excelencia en el servicio</span></li>
+                <li class="flex items-center p-2 rounded-md hover:bg-gray-50 transition-colors"><div class="bg-[#ff7043] bg-opacity-10 rounded-full p-3 mr-3 flex-shrink-0"><i class="fas fa-lightbulb text-[#ff7043] text-lg"></i></div><span class="text-gray-700 font-medium" data-lang-key="aboutValue3">Creatividad sin límites</span></li>
+                <li class="flex items-center p-2 rounded-md hover:bg-gray-50 transition-colors"><div class="bg-[#ff7043] bg-opacity-10 rounded-full p-3 mr-3 flex-shrink-0"><i class="fas fa-lock text-[#ff7043] text-lg"></i></div><span class="text-gray-700 font-medium" data-lang-key="aboutValue4">Confianza y seguridad</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-16">
+          <h3 class="text-3xl font-bold text-center text-gray-800 mb-10" data-lang-key="aboutWhyTitle">¿Por qué elegir <span class="text-[#009688]">SR Global Experiences</span>?</h3>
+          <div class="grid md:grid-cols-3 gap-8">
+            <div class="bg-white p-6 rounded-lg shadow-md"><div class="flex justify-center mb-4"><div class="w-16 h-16 bg-[#009688] bg-opacity-10 rounded-full flex items-center justify-center"><i class="fas fa-user-check text-2xl text-[#009688]"></i></div></div><h4 class="text-xl font-bold text-center mb-3" data-lang-key="aboutWhyServiceTitle">Servicio Personalizado</h4><p class="text-gray-600 text-center" data-lang-key="aboutWhyServiceDesc">Cada itinerario se diseña específicamente para ti, adaptándose a tus preferencias y necesidades.</p></div>
+            <div class="bg-white p-6 rounded-lg shadow-md"><div class="flex justify-center mb-4"><div class="w-16 h-16 bg-[#ff7043] bg-opacity-10 rounded-full flex items-center justify-center"><i class="fas fa-headset text-2xl text-[#ff7043]"></i></div></div><h4 class="text-xl font-bold text-center mb-3" data-lang-key="aboutWhySupportTitle">Atención 24/7</h4><p class="text-gray-600 text-center" data-lang-key="aboutWhySupportDesc">Estamos disponibles para ti en cualquier momento durante tu viaje para resolver cualquier situación.</p></div>
+            <div class="bg-white p-6 rounded-lg shadow-md"><div class="flex justify-center mb-4"><div class="w-16 h-16 bg-[#009688] bg-opacity-10 rounded-full flex items-center justify-center"><i class="fas fa-gem text-2xl text-[#009688]"></i></div></div><h4 class="text-xl font-bold text-center mb-3" data-lang-key="aboutWhyExclusiveTitle">Experiencias Exclusivas</h4><p class="text-gray-600 text-center" data-lang-key="aboutWhyExclusiveDesc">Acceso a experiencias únicas y destinos que no encontrarás en paquetes turísticos convencionales.</p></div>
+          </div>
+        </div>
+
+        <div class="bg-[#ff7043] rounded-xl shadow-lg overflow-hidden">
+          <div class="p-8 md:p-10 text-center">
+            <h3 class="text-2xl font-bold text-white mb-4" data-lang-key="aboutCtaTitle">¿Te gustaría trabajar con nosotros?</h3>
+            <p class="text-white mb-8 max-w-2xl mx-auto" data-lang-key="aboutCtaDesc">Permítenos ayudarte a crear experiencias inolvidables. Nuestro equipo está listo para diseñar tu próximo viaje soñado.</p>
+            <a href="contact.html" class="bg-white hover:bg-gray-50 text-[#009688] font-bold py-3 px-8 rounded-lg inline-flex items-center"><i class="fas fa-paper-plane mr-2"></i> <span data-lang-key="aboutCtaButton">Contactar Ahora</span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <style>.clip-path-diagonal{clip-path:polygon(30% 0,100% 0,100% 100%,0% 100%);}</style>
+
+  <footer id="contacto" class="bg-brand-dark text-white">
+    <div class="container mx-auto px-6 py-20 text-center">
+      <h2 class="text-4xl font-pacifico text-brand-orange mb-4" data-lang-key="footerTitle">Empieza a Soñar</h2>
+      <p class="text-xl mb-8" data-lang-key="footerSubtitle">y déjate llevar por un mundo de posibilidades.</p>
+      <div class="flex flex-col md:flex-row justify-center items-center gap-6 mb-8">
+        <a href="https://wa.me/522226794827" target="_blank" class="bg-green-500 text-white font-bold py-3 px-8 rounded-lg text-lg hover:bg-green-600 transition-colors flex items-center w-full md:w-auto justify-center"><i class="fab fa-whatsapp mr-3"></i> <span data-lang-key="footerWhatsapp">Chatear por WhatsApp</span></a>
+      </div>
+      <div class="flex justify-center items-center space-x-6 mb-10">
+        <a href="https://www.facebook.com/share/1WTAQ6eENn/?mibextid=wwXIfr" target="_blank" class="text-3xl hover:text-brand-orange transition-colors"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://www.instagram.com/sr_global_experiences" target="_blank" class="text-3xl hover:text-brand-orange transition-colors"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.tiktok.com/@sr_global_experiences" target="_blank" class="text-3xl hover:text-brand-orange transition-colors"><i class="fab fa-tiktok"></i></a>
+      </div>
+      <a href="mailto:ventas@srglobalexperiences.com" class="bg-brand-orange text-white font-bold py-4 px-10 rounded-lg text-lg hover:bg-opacity-90 transition-transform hover:scale-105 inline-block"><span data-lang-key="footerEmail">Enviar un Correo</span> <i class="fas fa-paper-plane ml-2"></i></a>
+    </div>
+    <div class="text-center py-4 bg-black bg-opacity-20"><p data-lang-key="footerCopyright">SR Global Experiences &copy; 2025. Diseñado con ❤️ para crear experiencias inolvidables.</p></div>
+  </footer>
+
+  <a href="https://wa.me/522226794827?text=Hola,%20me%20gustaría%20recibir%20más%20información%20sobre%20sus%20tours." target="_blank" class="whatsapp-float flex items-center justify-center"><i class="fab fa-whatsapp"></i></a>
+
+  <script>(function(){function i(src,cb){var s=document.createElement('script');s.src=src;s.defer=true;s.onload=cb;s.onerror=cb;document.body.appendChild(s);}function ensure(){if(typeof window.initNavigation!=="function"||typeof window.switchLanguage!=="function"){i('script.js?v=1');}}i('script.min.js?v=1',function(){setTimeout(ensure,0);});})();</script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const lang = params.get('lang');
+        if (lang && (lang === 'es' || lang === 'en')) {
+          if (typeof switchLanguage === 'function') switchLanguage(lang);
+        }
+      } catch {}
+    });
+  </script>
+</body>
+</html>

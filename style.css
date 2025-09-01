@@ -1,0 +1,155 @@
+/* Estilos personalizados para SR Global Experiences */
+
+/* Variables de colores personalizados */
+:root {
+  --brand-orange: #FF6B35;
+  --brand-dark: #313949;
+  --brand-turquoise: #009688;
+  --brand-blue: #0288D1;
+}
+
+/* Estilos de fuentes */
+.font-pacifico {
+  font-family: 'Pacifico', cursive;
+}
+
+.font-poppins {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Colores de marca */
+.text-brand-orange {
+  color: var(--brand-orange);
+}
+
+.text-brand-dark {
+  color: var(--brand-dark);
+}
+
+.text-brand-turquoise {
+  color: var(--brand-turquoise);
+}
+
+.text-brand-blue {
+  color: var(--brand-blue);
+}
+
+.bg-brand-orange {
+  background-color: var(--brand-orange);
+}
+
+.bg-brand-dark {
+  background-color: var(--brand-dark);
+}
+
+.bg-brand-turquoise {
+  background-color: var(--brand-turquoise);
+}
+
+.bg-brand-blue {
+  background-color: var(--brand-blue);
+}
+
+/* Estilos para el manejo de páginas en SPA */
+.page-content {
+  display: none;
+}
+
+.page-content.active {
+  display: block;
+}
+
+/* Estilos para la sección "FORMAS DE EXPLORAR EL MUNDO" */
+.explore-card {
+  transition: all 0.3s ease;
+}
+
+.explore-card:hover {
+  transform: translateY(-10px);
+}
+
+.explore-card img {
+  transition: all 0.5s ease;
+}
+
+.explore-card:hover img {
+  transform: scale(1.05);
+}
+
+/* Estilos para destinos y servicios */
+.destination-circle img {
+  transition: transform 0.3s ease;
+}
+
+.destination-circle:hover img {
+  transform: scale(1.05);
+}
+
+.service-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.service-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Botón flotante de WhatsApp */
+.whatsapp-float {
+  position: fixed;
+  width: 60px;
+  height: 60px;
+  bottom: 40px;
+  right: 40px;
+  background-color: #25d366;
+  color: #FFF;
+  border-radius: 50px;
+  text-align: center;
+  font-size: 30px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  transition: all 0.3s ease;
+}
+
+.whatsapp-float:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilos para el formulario de contacto */
+#crmWebToEntityForm {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Media queries para responsividad */
+@media (max-width: 768px) {
+  .whatsapp-float {
+    width: 50px;
+    height: 50px;
+    bottom: 20px;
+    right: 20px;
+    font-size: 25px;
+  }
+}
+
+/* Utilidades varias */
+.clip-path-diagonal { clip-path: polygon(30% 0, 100% 0, 100% 100%, 0% 100%); }
+
+/* Carrusel de Promociones (Swiper) */
+#promotions-carousel { position: relative; overflow: hidden; }
+#promotions-carousel .swiper-wrapper { align-items: stretch; }
+#promotions-carousel .swiper-slide { height: auto; }
+
+#promotions-carousel .swiper-pagination { position: relative; display: flex; justify-content: center; gap: 8px; margin-top: 16px; }
+#promotions-carousel .swiper-pagination-bullet { background: #009688; opacity: 0.3; width: 12px; height: 12px; transition: all 0.3s ease; }
+#promotions-carousel .swiper-pagination-bullet-active { background: #ff7043; opacity: 1; transform: scale(1.1); }
+
+#promotions-carousel .swiper-button-prev, #promotions-carousel .swiper-button-next {
+  position: relative; color: #009688; background: #fff; border-radius: 50%; width: 44px; height: 44px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center;
+}
+#promotions-carousel .swiper-button-prev:hover, #promotions-carousel .swiper-button-next:hover { background: #009688; color: #fff; transform: scale(1.05); }
+#promotions-carousel .swiper-button-prev:after, #promotions-carousel .swiper-button-next:after { font-size: 16px; font-weight: bold; }

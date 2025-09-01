@@ -1,0 +1,47 @@
+# Netlify configuration
+
+[build]
+  publish = "."
+  command = "npm install --no-audit --no-fund && npm run build"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+[build.processing]
+  skip_processing = false
+
+[build.processing.js]
+  bundle = false
+  minify = true
+
+[build.processing.css]
+  bundle = false
+  minify = true
+# Redirect legacy CSS path to minified file
+[[redirects]]
+  from = "/style.css"
+  to = "/style.min.css"
+  status = 301
+  force = true
+
+# Long cache for static assets
+[[headers]]
+  for = "/*.min.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/style.min.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Optional: cache JS bundles
+[[headers]]
+  for = "/*.min.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/script.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"

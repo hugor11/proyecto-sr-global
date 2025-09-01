@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-lang-key="titlePromotions">Promociones | SR Global Experiences</title>
+  <meta name="description" data-lang-key="metaPromotions" content="Promociones de viajes y tours con SR Global Experiences. Descubre ofertas y paquetes personalizados.">
+  <link rel="canonical" href="https://srglobalexperiences.com/promotions.html" />
+  <link rel="alternate" hreflang="es" href="https://srglobalexperiences.com/promotions.html" />
+  <link rel="alternate" hreflang="en" href="https://srglobalexperiences.com/promotions.html?lang=en" />
+  <link rel="icon" href="https://i.imgur.com/H57d5sD.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
+  <link rel="stylesheet" href="style.min.css?v=1" />
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:site_name" content="SR Global Experiences">
+  <meta property="og:title" content="Promociones | SR Global Experiences">
+  <meta property="og:description" content="Promociones de viajes y tours con SR Global Experiences. Descubre ofertas y paquetes personalizados.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://srglobalexperiences.com/promotions.html">
+  <meta property="og:image" content="https://i.imgur.com/3y5pPHv.jpeg">
+  <meta property="og:image:alt" content="Promociones de viajes con SR Global Experiences">
+  <meta property="og:locale" content="es_MX">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Promociones | SR Global Experiences">
+  <meta name="twitter:description" content="Promociones de viajes y tours con SR Global Experiences. Descubre ofertas y paquetes personalizados.">
+  <meta name="twitter:image" content="https://i.imgur.com/3y5pPHv.jpeg">
+  <meta name="twitter:image:alt" content="Promociones de viajes con SR Global Experiences">
+
+  <!-- JSON-LD: CollectionPage + Breadcrumbs -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Promociones",
+    "url": "https://srglobalexperiences.com/promotions.html",
+    "inLanguage": "es-MX",
+    "image": "https://i.imgur.com/3y5pPHv.jpeg",
+    "description": "Promociones de viajes y tours. Ofertas y paquetes personalizados.",
+    "isPartOf": {"@type": "WebSite", "name": "SR Global Experiences", "url": "https://srglobalexperiences.com/"}
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://srglobalexperiences.com/"},
+      {"@type": "ListItem", "position": 2, "name": "Promociones", "item": "https://srglobalexperiences.com/promotions.html"}
+    ]
+  }
+  </script>
+</head>
+<body class="font-poppins bg-gray-50">
+  <!-- Navbar completa -->
+  <nav id="navbar" class="bg-white/80 backdrop-blur-lg shadow-md sticky top-0 z-50 transition-all duration-300">
+    <div class="container mx-auto px-6">
+      <div class="flex justify-between items-center py-3">
+        <a href="index.html" class="flex items-center gap-2">
+          <img src="https://i.imgur.com/H57d5sD.png" alt="Logo Pequeño SR" class="h-12">
+          <span class="font-bold text-brand-dark hidden sm:block">SR Global Experiences</span>
+        </a>
+        <div class="flex items-center">
+          <div class="hidden md:flex items-center space-x-6 text-gray-700 font-semibold">
+            <a href="index.html" class="hover:text-brand-orange transition-colors" data-lang-key="navHome">Inicio</a>
+            <a href="promotions.html" class="hover:text-brand-orange transition-colors" data-lang-key="navPromotions">Promociones</a>
+            <a href="experiences.html" class="hover:text-brand-orange transition-colors" data-lang-key="navExperiences">Experiencias</a>
+            <a href="romance.html" class="hover:text-brand-orange transition-colors" data-lang-key="navRomance">Romance</a>
+            <a href="destinations.html" class="hover:text-brand-orange transition-colors" data-lang-key="navDestinations">Destinos</a>
+            <a href="groups.html" class="hover:text-brand-orange transition-colors" data-lang-key="navGroups">Grupos y Convenciones</a>
+            <a href="about.html" class="hover:text-brand-orange transition-colors" data-lang-key="navAbout">Nosotros</a>
+          </div>
+          <div class="flex items-center ml-6">
+            <a href="contact.html" class="bg-brand-orange text-white font-bold py-2 px-5 rounded-lg hover:bg-opacity-90 transition-all hover:scale-105" data-lang-key="navContactBtn">Contactar</a>
+            <div class="ml-4 flex items-center space-x-2 text-sm font-bold text-gray-600">
+              <a href="#" class="cursor-pointer hover:text-brand-orange" onclick="switchLanguage('es')">ES</a>
+              <span class="text-gray-300">|</span>
+              <a href="#" class="cursor-pointer hover:text-brand-orange" onclick="switchLanguage('en')">EN</a>
+            </div>
+            <button id="menu-toggle" class="ml-4 text-gray-700 md:hidden focus:outline-none">
+              <i class="fas fa-bars text-2xl"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div id="mobile-menu" class="hidden md:hidden py-4 bg-white rounded-lg shadow-lg mt-2">
+        <div class="flex flex-col space-y-3 px-4">
+          <a href="index.html" class="py-2 px-4 hover:bg-gray-100 rounded-md hover:text-brand-orange transition-colors" data-lang-key="navHome">Inicio</a>
+          <a href="promotions.html" class="py-2 px-4 hover:bg-gray-100 rounded-md hover:text-brand-orange transition-colors" data-lang-key="navPromotions">Promociones</a>
+          <a href="experiences.html" class="py-2 px-4 hover:bg-gray-100 rounded-md hover:text-brand-orange transition-colors" data-lang-key="navExperiences">Experiencias</a>
+          <a href="romance.html" class="py-2 px-4 hover:bg-gray-100 rounded-md hover:text-brand-orange transition-colors" data-lang-key="navRomance">Romance</a>
+          <a href="destinations.html" class="py-2 px-4 hover:bg-gray-100 rounded-md hover:text-brand-orange transition-colors" data-lang-key="navDestinations">Destinos</a>
+          <a href="groups.html" class="py-2 px-4 hover:bg-gray-100 rounded-md hover:text-brand-orange transition-colors" data-lang-key="navGroups">Grupos y Convenciones</a>
+          <a href="about.html" class="py-2 px-4 hover:bg-gray-100 rounded-md hover:text-brand-orange transition-colors" data-lang-key="navAbout">Nosotros</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <!-- Contenido real de Promociones copiado de index.html -->
+    <section id="promociones" class="py-20 bg-gray-50">
+      <div class="container mx-auto px-6">
+        <h2 class="text-4xl font-bold text-center text-brand-dark mb-12" data-lang-key="promotionsTitle">🔥 Promociones Imperdibles del Mes 🔥</h2>
+  <div class="swiper" id="promotions-carousel">
+          <div class="swiper-wrapper py-4">
+            <div class="swiper-slide">
+              <div class="bg-white rounded-lg shadow-xl overflow-hidden h-full flex flex-col">
+                <a href="https://i.imgur.com/3y5pPHv.jpeg" data-fancybox="gallery" data-caption="Playa del Carmen">
+                  <img src="https://i.imgur.com/3y5pPHv.jpeg" alt="Promoción de viaje a Playa del Carmen" class="w-full h-56 object-cover cursor-pointer">
+                </a>
+                <div class="p-6 flex-grow flex flex-col">
+                  <h3 class="text-2xl font-bold text-brand-turquoise mb-2">Playa del Carmen</h3>
+                  <div class="text-center my-4 py-2 bg-gray-100 rounded-lg">
+                    <p class="font-semibold text-brand-turquoise"><i class="fas fa-tags mr-2"></i><span data-lang-key="askForPackages">¡Pregunta por nuestros paquetes!</span></p>
+                  </div>
+                  <a href="#" target="_blank" class="block w-full text-center bg-brand-orange text-white font-bold py-3 rounded-lg hover:bg-opacity-90 mt-auto" data-lang-key="moreInfo">Más Información</a>
+                </div>
+              </div>
+            </div>
+            <div class="swiper-slide">
+              <div class="bg-white rounded-lg shadow-xl overflow-hidden h-full flex flex-col">
+                <a href="https://i.imgur.com/LV6DvOg.jpeg" data-fancybox="gallery" data-caption="Viaja a Disney">
+                  <img src="https://i.imgur.com/LV6DvOg.jpeg" alt="Promoción de viaje a Disney" class="w-full h-56 object-cover cursor-pointer">
+                </a>
+                <div class="p-6 flex-grow flex flex-col">
+                  <h3 class="text-2xl font-bold text-brand-turquoise mb-2" data-lang-key="promoDisney">Viaja a Disney</h3>
+                  <div class="text-center my-4 py-2 bg-gray-100 rounded-lg">
+                    <p class="font-semibold text-brand-turquoise"><i class="fas fa-tags mr-2"></i><span data-lang-key="askForPackages2">¡Pregunta por nuestros paquetes!</span></p>
+                  </div>
+                  <a href="#" target="_blank" class="block w-full text-center bg-brand-orange text-white font-bold py-3 rounded-lg hover:bg-opacity-90 mt-auto" data-lang-key="moreInfo2">Más Información</a>
+                </div>
+              </div>
+            </div>
+            <div class="swiper-slide">
+              <div class="bg-white rounded-lg shadow-xl overflow-hidden h-full flex flex-col">
+                <a href="https://i.imgur.com/gBvZAZq.jpeg" data-fancybox="gallery" data-caption="Barrancas del Cobre">
+                  <img src="https://i.imgur.com/gBvZAZq.jpeg" alt="Promoción de viaje a Barrancas del Cobre" class="w-full h-56 object-cover cursor-pointer">
+                </a>
+                <div class="p-6 flex-grow flex flex-col">
+                  <h3 class="text-2xl font-bold text-brand-turquoise mb-2">Barrancas del Cobre</h3>
+                  <div class="text-center my-4 py-2 bg-gray-100 rounded-lg">
+                    <p class="font-semibold text-brand-turquoise"><i class="fas fa-tags mr-2"></i><span data-lang-key="askForPackages3">¡Pregunta por nuestros paquetes!</span></p>
+                  </div>
+                  <a href="#" target="_blank" class="block w-full text-center bg-brand-orange text-white font-bold py-3 rounded-lg hover:bg-opacity-90 mt-auto" data-lang-key="moreInfo3">Más Información</a>
+                </div>
+              </div>
+            </div>
+            <div class="swiper-slide">
+              <div class="bg-white rounded-lg shadow-xl overflow-hidden h-full flex flex-col">
+                <a href="https://i.imgur.com/zPwUSa5.jpeg" data-fancybox="gallery" data-caption="Jordania y Egipto">
+                  <img src="https://i.imgur.com/zPwUSa5.jpeg" alt="Promoción de viaje a Jordania y Egipto" class="w-full h-56 object-cover cursor-pointer">
+                </a>
+                <div class="p-6 flex-grow flex flex-col">
+                  <h3 class="text-2xl font-bold text-brand-turquoise mb-2" data-lang-key="promoJordan">Jordania y Egipto</h3>
+                  <div class="text-center my-4 py-2 bg-gray-100 rounded-lg">
+                    <p class="font-semibold text-brand-turquoise"><i class="fas fa-tags mr-2"></i><span data-lang-key="askForPackages4">¡Pregunta por nuestros paquetes!</span></p>
+                  </div>
+                  <a href="#" target="_blank" class="block w-full text-center bg-brand-orange text-white font-bold py-3 rounded-lg hover:bg-opacity-90 mt-auto" data-lang-key="moreInfo4">Más Información</a>
+                </div>
+              </div>
+            </div>
+            <div class="swiper-slide">
+              <div class="bg-white rounded-lg shadow-xl overflow-hidden h-full flex flex-col">
+                <a href="https://i.imgur.com/300Oyw0.jpeg" data-fancybox="gallery" data-caption="Guatemala">
+                  <img src="https://i.imgur.com/300Oyw0.jpeg" alt="Promoción de viaje a Guatemala" class="w-full h-56 object-cover cursor-pointer">
+                </a>
+                <div class="p-6 flex-grow flex flex-col">
+                  <h3 class="text-2xl font-bold text-brand-turquoise mb-2">Guatemala</h3>
+                  <div class="text-center my-4 py-2 bg-gray-100 rounded-lg">
+                    <p class="font-semibold text-brand-turquoise"><i class="fas fa-tags mr-2"></i><span data-lang-key="askForPackages5">¡Pregunta por nuestros paquetes!</span></p>
+                  </div>
+                  <a href="#" target="_blank" class="block w-full text-center bg-brand-orange text-white font-bold py-3 rounded-lg hover:bg-opacity-90 mt-auto" data-lang-key="moreInfo5">Más Información</a>
+                </div>
+              </div>
+            </div>
+            <div class="swiper-slide">
+              <div class="bg-white rounded-lg shadow-xl overflow-hidden h-full flex flex-col">
+                <a href="https://i.imgur.com/gNYSIjK.jpeg" data-fancybox="gallery" data-caption="Perú">
+                  <img src="https://i.imgur.com/gNYSIjK.jpeg" alt="Promoción de viaje a Perú" class="w-full h-56 object-cover cursor-pointer">
+                </a>
+                <div class="p-6 flex-grow flex flex-col">
+                  <h3 class="text-2xl font-bold text-brand-turquoise mb-2">Perú</h3>
+                  <div class="text-center my-4 py-2 bg-gray-100 rounded-lg">
+                    <p class="font-semibold text-brand-turquoise"><i class="fas fa-tags mr-2"></i><span data-lang-key="askForPackages6">¡Pregunta por nuestros paquetes!</span></p>
+                  </div>
+                  <a href="#" target="_blank" class="block w-full text-center bg-brand-orange text-white font-bold py-3 rounded-lg hover:bg-opacity-90 mt-auto" data-lang-key="moreInfo6">Más Información</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Controles del carrusel dentro del contenedor swiper -->
+          <div class="flex justify-center items-center gap-6 mt-8">
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-next"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="contacto" class="bg-brand-dark text-white">
+    <div class="container mx-auto px-6 py-20 text-center">
+      <h2 class="text-4xl font-pacifico text-brand-orange mb-4" data-lang-key="footerTitle">Empieza a Soñar</h2>
+      <p class="text-xl mb-8" data-lang-key="footerSubtitle">y déjate llevar por un mundo de posibilidades.</p>
+      <div class="flex flex-col md:flex-row justify-center items-center gap-6 mb-8">
+        <a href="https://wa.me/522226794827" target="_blank" class="bg-green-500 text-white font-bold py-3 px-8 rounded-lg text-lg hover:bg-green-600 transition-colors flex items-center w-full md:w-auto justify-center"><i class="fab fa-whatsapp mr-3"></i> <span data-lang-key="footerWhatsapp">Chatear por WhatsApp</span></a>
+      </div>
+      <div class="flex justify-center items-center space-x-6 mb-10">
+        <a href="https://www.facebook.com/share/1WTAQ6eENn/?mibextid=wwXIfr" target="_blank" class="text-3xl hover:text-brand-orange transition-colors"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://www.instagram.com/sr_global_experiences" target="_blank" class="text-3xl hover:text-brand-orange transition-colors"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.tiktok.com/@sr_global_experiences" target="_blank" class="text-3xl hover:text-brand-orange transition-colors"><i class="fab fa-tiktok"></i></a>
+      </div>
+      <a href="mailto:ventas@srglobalexperiences.com" class="bg-brand-orange text-white font-bold py-4 px-10 rounded-lg text-lg hover:bg-opacity-90 transition-transform hover:scale-105 inline-block"><span data-lang-key="footerEmail">Enviar un Correo</span> <i class="fas fa-paper-plane ml-2"></i></a>
+    </div>
+    <div class="text-center py-4 bg-black bg-opacity-20"><p data-lang-key="footerCopyright">SR Global Experiences &copy; 2025. Diseñado con ❤️ para crear experiencias inolvidables.</p></div>
+  </footer>
+
+  <a href="https://wa.me/522226794827?text=Hola,%20me%20gustaría%20recibir%20más%20información%20sobre%20sus%20tours." target="_blank" class="whatsapp-float flex items-center justify-center">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+
+  <script src="https://unpkg.com/swiper/swiper-bundle.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js" defer></script>
+  <script>(function(){function i(src,cb){var s=document.createElement('script');s.src=src;s.defer=true;s.onload=cb;s.onerror=cb;document.body.appendChild(s);}function ensure(){if(typeof window.initNavigation!=="function"||typeof window.switchLanguage!=="function"){i('script.js?v=1');}}i('script.min.js?v=1',function(){setTimeout(ensure,0);});})();</script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const lang = params.get('lang');
+        if (lang && (lang === 'es' || lang === 'en')) {
+          if (typeof switchLanguage === 'function') switchLanguage(lang);
+        }
+      } catch {}
+    });
+  </script>
+</body>
+</html>

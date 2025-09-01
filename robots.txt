@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /calculadora
+Allow: /
+
+Sitemap: https://srglobalexperiences.com/sitemap.xml
