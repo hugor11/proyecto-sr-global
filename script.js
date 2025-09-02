@@ -8,7 +8,6 @@ function startApp() {
     window.__appStarted = true;
 
     // Inicializar funcionalidades
-    initNavigation();
     initFancybox();
     initLanguageSwitcher();
     addScrollEffects();
@@ -16,14 +15,6 @@ function startApp() {
     watchCarouselVisibility();
     // Intento inicial del carrusel (solo se creará si es visible)
     try { initSwiper(); } catch {}
-    // Actualizar/inicializar al cambiar el hash (SPA)
-    window.addEventListener('hashchange', function() {
-        const pageId = window.location.hash.substring(1);
-        if (pageId) {
-            try { showPage(pageId); } catch {}
-        }
-        ensurePromotionsSwiper();
-    });
 }
 
 // Arranque seguro, incluso si el script se carga después del DOMContentLoaded
@@ -34,44 +25,7 @@ if (document.readyState === 'loading') {
     startApp();
 }
 
-// Navegación SPA (Single Page Application)
-function showPage(pageId) {
-    // Ocultar todas las páginas
-    document.querySelectorAll('.page-content').forEach(page => {
-        page.classList.remove('active');
-    });
-    
-    // Mostrar la página seleccionada
-    document.getElementById(pageId).classList.add('active');
-    
-    // Desplazarse al inicio
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-
-    // Si mostramos promociones, asegurar el carrusel
-    if (pageId === 'page-promotions') {
-        // Dar un tick para que se apliquen estilos de visibilidad antes de actualizar
-        setTimeout(ensurePromotionsSwiper, 50);
-    }
-}
-
-// Inicializar navegación
-function initNavigation() {
-    // Detectar la página actual desde la URL (hash) al cargar
-    if (window.location.hash) {
-        const pageId = window.location.hash.substring(1);
-        showPage(pageId);
-    }
-    
-    // Manejar eventos de click en enlaces de navegación
-    document.querySelectorAll('nav a').forEach(link => {
-        link.addEventListener('click', function(e) {
-            if (this.getAttribute('onclick')) {
-                // La función showPage ya está siendo llamada desde el atributo onclick
-                return;
-            }
-        });
-    });
-}
+// SPA navigation removed; site is now multipage
 
 // Instancia global para evitar reinicializaciones innecesarias
 let promotionsSwiper = null;
