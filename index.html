@@ -303,7 +303,7 @@
                         s.src=src; s.defer=true; s.onload=done; s.onerror=done; document.body.appendChild(s);
                     }
                     function ensure(){
-                        if (typeof window.initNavigation!=="function" || typeof window.switchLanguage!=="function"){
+                        if (typeof window.switchLanguage!=="function"){
                             inject('script.js?v=1');
                         }
                     }
