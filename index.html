@@ -55,6 +55,8 @@
 
     <!-- Estilos personalizados -->
     <link rel="stylesheet" href="style.min.css?v=1">
+    <!-- n8n Chat CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
 
         <!-- JSON-LD: Organization + Website -->
         <script type="application/ld+json">
@@ -334,5 +336,12 @@
             } catch {}
         });
     </script>
+        <!-- n8n Chat Widget -->
+        <script type="module">
+            import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
+            createChat({
+                webhookUrl: 'https://hugor1n8n.duckdns.org/webhook/7a1a8203-91c3-4e15-8433-0a93d8361815/chat'
+            });
+        </script>
 </body>
 </html>

@@ -15,6 +15,10 @@ function startApp() {
     watchCarouselVisibility();
     // Intento inicial del carrusel (solo se creará si es visible)
     try { initSwiper(); } catch {}
+
+    // Integraciones de Zoho (iframe): auto-resize y tracking
+    initZohoFormIntegration();
+    initGAInteractions();
 }
 
 // Arranque seguro, incluso si el script se carga después del DOMContentLoaded
@@ -112,12 +116,106 @@ function watchCarouselVisibility() {
 
 // Inicializar Fancybox para galería de imágenes
 function initFancybox() {
-    Fancybox.bind("[data-fancybox]", {
-        // Opciones de configuración
-        animated: true,
-        showClass: "fancybox-zoomIn",
-        hideClass: "fancybox-zoomOut",
+    if (typeof window.Fancybox === 'undefined') return;
+    try {
+        Fancybox.bind("[data-fancybox]", {
+            // Opciones de configuración
+            animated: true,
+            showClass: "fancybox-zoomIn",
+            hideClass: "fancybox-zoomOut",
+        });
+    } catch {}
+}
+
+// Auto-resize y tracking para el iframe del formulario de Zoho
+function initZohoFormIntegration() {
+    const iframe = document.getElementById('zoho-form-iframe');
+    if (!iframe) return;
+
+    // Ajuste inicial por si el contenido tarda
+    let lastHeight = 1000;
+    const setHeight = (h) => {
+        const height = Math.max(600, Math.min(3000, Number(h) || lastHeight));
+        lastHeight = height;
+        iframe.style.height = height + 'px';
+    };
+
+    // Listener para mensajes postMessage desde la página embebida
+    window.addEventListener('message', (event) => {
+        // Aceptamos mensajes solo de la misma origin (misma web) o sin origin (algunos navegadores file://)
+        // y con un payload esperado
+        const data = event.data;
+        if (!data || typeof data !== 'object') return;
+
+        // Resize
+        if (data.type === 'zohoForm:resize' && data.height) {
+            setHeight(data.height);
+        }
+
+        // Envío exitoso del formulario
+        if (data.type === 'zohoForm:submitted') {
+            try {
+                if (typeof gtag === 'function') {
+                    gtag('event', 'generate_lead', {
+                        method: 'zoho_form',
+                        event_category: 'lead',
+                        event_label: 'contact_form',
+                        value: 1
+                    });
+                }
+            } catch {}
+        }
     });
+
+    // Intento de solicitar altura periódicamente (fallback)
+    const ping = () => {
+        try { iframe.contentWindow && iframe.contentWindow.postMessage({ type: 'parent:requestHeight' }, '*'); } catch {}
+    };
+    const interval = setInterval(ping, 1500);
+    // Detener si el iframe se elimina
+    const obs = new MutationObserver(() => { if (!document.body.contains(iframe)) { clearInterval(interval); obs.disconnect(); } });
+    obs.observe(document.body, { childList: true, subtree: true });
+}
+
+// GA4: Medición de clics de contacto (WhatsApp, Email, Tel, Contactar)
+function initGAInteractions() {
+    // Helper seguro para enviar eventos
+    const send = (name, params) => {
+        try { if (typeof gtag === 'function') gtag('event', name, params || {}); } catch {}
+    };
+
+    // Clics en enlaces relevantes
+    document.addEventListener('click', (ev) => {
+        const a = ev.target && ev.target.closest ? ev.target.closest('a') : null;
+        if (!a) return;
+        const href = (a.getAttribute('href') || '').trim();
+        if (!href) return;
+
+        const page = location.pathname + location.search;
+        const common = { page_path: page, link_url: href };
+
+        // WhatsApp
+        if (/wa\.me|api\.whatsapp\.com|whatsapp:\/\//i.test(href)) {
+            send('contact', { method: 'whatsapp', ...common });
+            return;
+        }
+        // Email
+        if (href.startsWith('mailto:')) {
+            send('contact', { method: 'email', ...common });
+            return;
+        }
+        // Teléfono
+        if (href.startsWith('tel:')) {
+            send('contact', { method: 'phone', ...common });
+            return;
+        }
+        // Botón Contactar / navegación a contact.html
+        const isContactBtn = a.matches('[data-lang-key="navContactBtn"]');
+        const goesToContact = /contact\.html(\?|#|$)/i.test(href);
+        if (isContactBtn || goesToContact) {
+            send('contact', { method: isContactBtn ? 'contact_button' : 'contact_page_link', ...common });
+        }
+    }, true);
 }
 
 // Sistema de cambio de idioma

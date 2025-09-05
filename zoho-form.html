@@ -2,16 +2,57 @@
    - You can modify the font style and form style to suit your website. 
    - Code lines with comments Do not remove this code are required for the form to work properly, make sure that you do not remove these lines of code. 
    - The Mandatory check script can modified as to suit your business needs. 
-   - It is important that you test the modified form before going live.-->
+	 - It is important that you test the modified form before going live.-->
+<script>
+// Auto-resize helper: observes body height and informs parent
+(function(){
+	try {
+		var lastH = 0;
+		function postResize(h){
+			if (!h || Math.abs(h - lastH) < 10) return;
+			lastH = h;
+			parent && parent.postMessage({ type: 'zohoForm:resize', height: h }, '*');
+		}
+		function getHeight(){
+			var b = document.body, h = Math.max(b.scrollHeight, b.offsetHeight, b.clientHeight);
+			return h + 40; // padding
+		}
+		var ro = new MutationObserver(function(){ postResize(getHeight()); });
+		ro.observe(document.documentElement || document.body, { childList: true, subtree: true, attributes: true });
+		window.addEventListener('load', function(){ setTimeout(function(){ postResize(getHeight()); }, 200); });
+
+		// Responder a solicitudes explícitas del padre
+		window.addEventListener('message', function(ev){
+			var data = ev && ev.data;
+			if (!data || typeof data !== 'object') return;
+			if (data.type === 'parent:requestHeight') {
+				try { postResize(getHeight()); } catch(e){}
+			}
+		});
+	} catch (e) {}
+})();
+
+// Submit tracking: hook form submit to notify parent
+(function(){
+	try {
+		var form = document.querySelector('form');
+		if (!form) return;
+		form.addEventListener('submit', function(){
+			try { parent && parent.postMessage({ type: 'zohoForm:submitted' }, '*'); } catch(e){}
+			setTimeout(function(){ try { parent && parent.postMessage({ type: 'zohoForm:resize', height: (document.body && document.body.scrollHeight) || 1000 }, '*'); } catch(e){} }, 800);
+		});
+	} catch (e) {}
+})();
+</script>
 <div id = 'crmWebToEntityForm' class = 'zcwf_lblLeft crmWebToEntityForm' style = 'background-color: white;color: black;max-width: 600px;'>
 	<meta name = 'viewport' content = 'width=device-width, initial-scale=1.0'>
 		<META HTTP-EQUIV = 'content-type' CONTENT = 'text/html;charset=UTF-8'>
 			<form id = 'webform6934076000000572557' action = 'https://crm.zoho.com/crm/WebToLeadForm' name = WebToLeads6934076000000572557 method = 'POST' onSubmit = 'javascript:document.charset="UTF-8"; return checkMandatory6934076000000572557()' accept-charset = 'UTF-8'>
-				<input type = 'text' style = 'display:none;' name = 'xnQsjsdp' value = '0f882613cbb22e43e070fcdfc839cc6a5da3be7d166cc51d1dcfbe7af61fcd2b'>
+				<input type = 'text' style = 'display:none;' name = 'xnQsjsdp' value = '64686f29cef866639258915f43a0bee367f956aa5f52b32f34ba870cd2325518'>
 				</input>
 				<input type = 'hidden' name = 'zc_gad' id = 'zc_gad' value = ''>
 				</input>
-				<input type = 'text' style = 'display:none;' name = 'xmIwtLD' value = 'b2d4d7825bec801b065ce08f5b7c60246acf1150481022c6d055f925cb31c644aa56fde3c10cadf648b29201a634179c'>
+				<input type = 'text' style = 'display:none;' name = 'xmIwtLD' value = '22ac58103ee1cb3ffc7998770cffa1659e191b5a73770ee6055fd5a7db7629aa51f02751787014dbe733df6d4f596326'>
 				</input>
 				<input type = 'text' style = 'display:none;' name = 'actionType' value = 'TGVhZHM='>
 				</input>
@@ -307,6 +348,21 @@
 							<option value = 'Resto&#x20;del&#x20;Mundo'>Resto del Mundo</option>
 						</select>
 						<div class = 'zcwf_col_help'>
+						</div>
+					</div>
+				</div>
+				<div class = 'zcwf_row'>
+					<div class = 'zcwf_col_lab' style = 'font-size:12px; font-family: Arial;'>
+						<label for = 'Description'>Nombre del vendedor</label>
+					</div>
+					<div class = 'zcwf_col_fld'>
+						<textarea style = 'font-family: Arial, sans-serif;' aria-multiline = 'true' id = 'Description' aria-required = 'false' aria-label = 'Description' name = 'Description'>
+						</textarea>
+						<div class = 'zcwf_col_help'>
+							<span title = 'sara elisa' style = 'cursor: pointer; width: 16px; height: 16px; display: inline-block; background: #fff; border: 1px solid #c0c6cc; color: #c1c1c1; text-align: center; font-size: 11px; line-height: 16px; font-weight: bold; border-radius: 50%;' onclick = 'tooltipShow6934076000000572557(this)'>?</span>
+							<div class = 'zcwf_tooltip_over' style = 'display: none;'>
+								<span class = 'zcwf_tooltip_ctn'>sara elisa</span>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -957,7 +1013,7 @@
 							}
 						</script>
 						<!-- Do not remove this --- Analytics Tracking code starts -->
-						<script id = 'wf_anal' src = 'https://crm.zohopublic.com/crm/WebFormAnalyticsServeServlet?rid=8524adec71b6b894e6cae68cf89a0adcdeb03f427f1669976b3165e61771281c67aec945784f622d2f7a8c428f20ef2bgidc0a4b3a110a4e51cf4abaa4215bd0a48dd01dc7d5ce9b6103c9d8fafada30c3agid23336d9b5f5b4acc565307051fbd12220f7538988c4bcc40080aee885a02ea14gid0a722cfa3a93d86eb3c722fabf130324fbf6b68120d422a21b670eff96fe8ad6&tw=2a45b02ecf4a12761d73bb339bf92bfe1afa04e7058a7d1a83fab366a0ae3174'>
+						<script id = 'wf_anal' src = 'https://crm.zohopublic.com/crm/WebFormAnalyticsServeServlet?rid=31ce820723b1b8d8adcea3bf3b098b523f0dda0d84e6af14d87b63105a7bb1c72d55b44a81d6f60955f96980bf82fb2fgidc84e2a1aa5f0824e64eb1244d379d61f8511ad67ac1f8adc68127a7311ea0ea0gid497c197a4ad6574c616b707f2141a3a061df70fb74f7c4c45d2d510824390b28gid0f39947545768645585646ff6cd791b703e6997855abbd895f4e6d78b58ea758&tw=68b8f9a4321650a16c6ba56ee6f3586457d7b9ed05175c4c0d77f9818f318fab'>
 					</script>
 					<!-- Do not remove this --- Analytics Tracking code ends. -->
 				</form>

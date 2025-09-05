@@ -15,6 +15,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.min.css?v=1" />
+  <!-- n8n Chat CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
 
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-C7520ZEPN5"></script>
@@ -244,7 +246,7 @@
           <div id="form" class="bg-white rounded-2xl shadow-xl p-3 md:p-4 lg:col-span-2">
             <h2 class="text-2xl font-bold text-brand-dark mb-4"><i class="fas fa-file-alt mr-2 text-[#ff7043]"></i> <span data-lang-key="contactFormTitle">Formulario de Contacto</span></h2>
             <div class="rounded-xl overflow-hidden border border-gray-200">
-              <iframe src="zoho-form.html" class="w-full h-[1100px] md:h-[950px]" title="Formulario de contacto"></iframe>
+              <iframe id="zoho-form-iframe" src="zoho-form.html" class="w-full" style="height: 1000px;" title="Formulario de contacto" loading="lazy"></iframe>
             </div>
             <div class="mt-4 text-center text-sm text-gray-500">
               <p><i class="fas fa-lock mr-1"></i> <span data-lang-key="dataProtectionText">Tus datos están protegidos y se envían de forma segura a nuestro CRM.</span></p>
@@ -324,6 +326,13 @@
           if (typeof switchLanguage === 'function') switchLanguage(lang);
         }
       } catch {}
+    });
+  </script>
+  <!-- n8n Chat Widget -->
+  <script type="module">
+    import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
+    createChat({
+      webhookUrl: 'https://hugor1n8n.duckdns.org/webhook/7a1a8203-91c3-4e15-8433-0a93d8361815/chat'
     });
   </script>
 </body>
