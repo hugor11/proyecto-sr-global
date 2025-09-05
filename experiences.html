@@ -176,7 +176,18 @@
   <script type="module">
     import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
     createChat({
-      webhookUrl: 'https://hugor1n8n.duckdns.org/webhook/7a1a8203-91c3-4e15-8433-0a93d8361815/chat'
+      webhookUrl: 'https://hugor1n8n.duckdns.org/webhook/7a1a8203-91c3-4e15-8433-0a93d8361815/chat',
+      defaultLanguage: 'en',
+      i18n: {
+        en: {
+          title: '¡Hola! 👋',
+          subtitle: 'Inicia un chat. Estamos para ayudarte 24/7.',
+          footer: '',
+          getStarted: 'Nueva conversación',
+          inputPlaceholder: 'Escribe tu pregunta…'
+        }
+      },
+      initialMessages: ['¡Hola! 👋', '¿En qué podemos ayudarte hoy?']
     });
   </script>
 </body>
