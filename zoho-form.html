@@ -1,3 +1,6 @@
+<!-- Bootstrap temprano del idioma -->
+<script>(function(){try{var p=new URLSearchParams(window.location.search);var urlLang=p.get('lang');var stored=localStorage.getItem('preferredLanguage');var lang=(urlLang==='es'||urlLang==='en')?urlLang:((stored==='es'||stored==='en')?stored:'es');document.documentElement&&document.documentElement.setAttribute('lang',lang);if(!urlLang){var u=new URL(window.location.href);u.searchParams.set('lang',lang);window.history.replaceState({},'',u.toString());}}catch(e){}})();</script>
+<!-- fin bootstrap idioma -->
 <!-- Note :
    - You can modify the font style and form style to suit your website. 
    - Code lines with comments Do not remove this code are required for the form to work properly, make sure that you do not remove these lines of code. 
@@ -698,7 +701,7 @@
 								getCorrectYear: function ( e ){
 									var t = e + '';
 									if( e = parseInt( e ),2 === t.length ){
-										var a = ( new Date ).getFullYear (), r = parseInt ( a / 100 ), n = a % 100, s = ( n-this.lLimit + 100 ) % 100;
+										var a = ( new Date ).getFullYear (), r = parseInt ( a / 100 ), n = a % 100, s = ( n-this.limit + 100 ) % 100;
 										e = n > s ? e < s ? r + 1 + '' + this.crctLength ( e, 2 ): r + '' + this.crctLength ( e, 2 ): e < s ? r + '' + this.crctLength ( e, 2 ): r-1 + '' + this.crctLength ( e, 2 )
 									}
 									return e},

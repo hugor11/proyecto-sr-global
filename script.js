@@ -220,6 +220,12 @@ function initGAInteractions() {
 
 // Sistema de cambio de idioma
 function switchLanguage(lang) {
+    // Nueva guarda idempotente basada en un sentinel propio, no en <html lang>
+    if (window.__lastAppliedLanguage === lang) {
+        // Aseguramos que los enlaces mantengan el parámetro aunque no volvamos a traducir
+        applyLangToLinks(lang);
+        return;
+    }
     // Objeto con traducciones
     const translations = {
         es: {
@@ -695,6 +701,8 @@ function switchLanguage(lang) {
 
     // Propagar el idioma seleccionado a los enlaces internos
     applyLangToLinks(lang);
+    // Marcar sentinel después de aplicar realmente las traducciones en esta carga de página
+    window.__lastAppliedLanguage = lang;
 }
 
 // Añadir ?lang= a enlaces internos para mantener el idioma entre páginas
