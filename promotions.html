@@ -20,8 +20,6 @@
   <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
   <link rel="stylesheet" href="style.min.css?v=1" />
-  <!-- n8n Chat CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
 
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-C7520ZEPN5"></script>
@@ -255,23 +253,27 @@
       } catch {}
     });
   </script>
-  <!-- n8n Chat Widget -->
-  <script type="module">
-    import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
-    createChat({
-      webhookUrl: 'https://hugor1n8n.duckdns.org/webhook/7a1a8203-91c3-4e15-8433-0a93d8361815/chat',
-      defaultLanguage: 'en',
-      i18n: {
-        en: {
-          title: '¡Hola! 👋',
-          subtitle: 'Inicia un chat. Estamos para ayudarte 24/7.',
-          footer: '',
-          getStarted: 'Nueva conversación',
-          inputPlaceholder: 'Escribe tu pregunta…'
-        }
-      },
-      initialMessages: ['¡Hola! 👋', '¿En qué podemos ayudarte hoy?']
+
+  <!-- Landbot Chat Widget -->
+  <script>
+window.addEventListener('mouseover', initLandbot, { once: true });
+window.addEventListener('touchstart', initLandbot, { once: true });
+var myLandbot;
+function initLandbot() {
+  if (!myLandbot) {
+    var s = document.createElement('script');
+    s.type = "module"
+    s.async = true;
+    s.addEventListener('load', function() {
+      var myLandbot = new Landbot.Livechat({
+        configUrl: 'https://storage.googleapis.com/landbot.online/v3/H-3136435-ZG91F5G8KP37MEXH/index.json',
+      });
     });
-  </script>
+    s.src = 'https://cdn.landbot.io/landbot-3/landbot-3.0.0.mjs';
+    var x = document.getElementsByTagName('script')[0];
+    x.parentNode.insertBefore(s, x);
+  }
+}
+</script>
 </body>
 </html>
