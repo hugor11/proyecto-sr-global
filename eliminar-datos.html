@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eliminar tus datos | SR Global Experiences</title>
+  <meta name="description" content="Instrucciones para solicitar la eliminación de tus datos personales de SR Global Experiences." />
+  <link rel="canonical" href="https://srglobalexperiences.com/eliminar-datos" />
+  <link rel="stylesheet" href="style.min.css?v=1" />
+</head>
+<body class="min-h-screen bg-white text-gray-800">
+  <header class="container mx-auto px-4 py-6">
+    <a href="/" class="inline-flex items-center gap-3">
+      <img src="https://i.imgur.com/H57d5sD.png" alt="SR Global Experiences" width="40" height="40" />
+      <span class="text-xl font-bold">SR Global Experiences</span>
+    </a>
+  </header>
+
+  <main class="container mx-auto px-4 py-10 prose max-w-3xl">
+    <h1>Eliminar tus datos</h1>
+    <p>Si deseas que eliminemos tus datos personales, sigue estos pasos:</p>
+    <ol>
+      <li>Envía un correo a <a href="mailto:contacto@srglobalexperiences.com">contacto@srglobalexperiences.com</a> con el asunto “Solicitud de eliminación de datos”.</li>
+      <li>Incluye el correo electrónico o número de teléfono con el que nos contactaste y cualquier detalle que ayude a identificar tu registro.</li>
+      <li>Opcional: Indica si deseas eliminar datos de formularios, chat u otros canales.</li>
+    </ol>
+    <p>Responderemos a tu solicitud dentro de 30 días naturales y te notificaremos cuando se complete la eliminación. Conservaremos únicamente la información necesaria para cumplir con obligaciones legales o contables.</p>
+
+    <p>Consulta también nuestra <a href="/privacy.html#data-deletion">Política de Privacidad</a>.</p>
+  </main>
+
+  <footer class="container mx-auto px-4 py-10 text-sm text-gray-600">
+    <p>
+      © <span id="y"></span> SR Global Experiences.
+      <a href="/privacy.html">Política de Privacidad</a>
+    </p>
+  </footer>
+
+  <script>
+    document.getElementById('y').textContent = new Date().getFullYear();
+  </script>
+
+  <!-- Landbot Chat Widget -->
+  <script>
+    window.addEventListener('mouseover', initLandbot, { once: true });
+    window.addEventListener('touchstart', initLandbot, { once: true });
+    var myLandbot;
+    function initLandbot() {
+      if (!myLandbot) {
+        var s = document.createElement('script');
+        s.type = 'module';
+        s.async = true;
+        s.addEventListener('load', function () {
+          var myLandbot = new Landbot.Livechat({
+            configUrl:
+              'https://storage.googleapis.com/landbot.online/v3/H-3136435-ZG91F5G8KP37MEXH/index.json?v=' + Date.now(),
+          });
+        });
+        s.src = 'https://cdn.landbot.io/landbot-3/landbot-3.0.0.mjs';
+        var x = document.getElementsByTagName('script')[0];
+        x.parentNode.insertBefore(s, x);
+      }
+    }
+  </script>
+</body>
+</html>
