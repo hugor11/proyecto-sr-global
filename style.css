@@ -6,6 +6,37 @@
   --brand-dark: #313949;
   --brand-turquoise: #009688;
   --brand-blue: #0288D1;
+  --vh: 1vh; /* Variable para altura viewport en iOS */
+}
+
+/* Reset para mejor compatibilidad cross-browser */
+* {
+  box-sizing: border-box;
+}
+
+/* Fix para iOS: evitar zoom al hacer tap en inputs */
+input, select, textarea {
+  font-size: 16px;
+}
+
+/* Fix para iOS: mejor rendering de fuentes */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Fix para iOS: evitar selección accidental de texto */
+.no-select {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Fix para iOS: mejor handling de touch */
+button, a {
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Estilos de fuentes */
@@ -109,11 +140,23 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
   z-index: 100;
   transition: all 0.3s ease;
+  /* Fix para iOS */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .whatsapp-float:hover {
-  transform: scale(1.1);
+  transform: scale(1.1) translateZ(0);
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Fix para iOS: mejor comportamiento del menú móvil */
+#mobile-menu {
+  /* Usar altura viewport con fallback para iOS */
+  max-height: calc(var(--vh, 1vh) * 100 - 80px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling en iOS */
 }
 
 /* Estilos para el formulario de contacto */

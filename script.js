@@ -1,5 +1,41 @@
 // SR Global Experiences - Script Principal
 
+// Polyfills para compatibilidad con iOS/Safari
+(function() {
+    // Polyfill para closest() en Safari más antiguo
+    if (!Element.prototype.closest) {
+        Element.prototype.closest = function(s) {
+            var el = this;
+            do {
+                if (el.matches(s)) return el;
+                el = el.parentElement || el.parentNode;
+            } while (el !== null && el.nodeType === 1);
+            return null;
+        };
+    }
+    
+    // Polyfill para matches() en Safari más antiguo
+    if (!Element.prototype.matches) {
+        Element.prototype.matches = Element.prototype.matchesSelector || 
+                                  Element.prototype.webkitMatchesSelector || 
+                                  Element.prototype.mozMatchesSelector || 
+                                  Element.prototype.msMatchesSelector;
+    }
+    
+    // Fix para viewport height en iOS
+    function setVHProperty() {
+        const vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+    }
+    
+    // Configurar al cargar y al cambiar orientación
+    setVHProperty();
+    window.addEventListener('resize', setVHProperty);
+    window.addEventListener('orientationchange', function() {
+        setTimeout(setVHProperty, 100);
+    });
+})();
+
 // Evitar doble inicialización
 window.__appStarted = window.__appStarted || false;
 
@@ -10,6 +46,7 @@ function startApp() {
     // Inicializar funcionalidades
     initFancybox();
     initLanguageSwitcher();
+    initMobileMenu(); // Agregar inicialización del menú móvil
     addScrollEffects();
     initModals();
     watchCarouselVisibility();
@@ -25,9 +62,17 @@ function startApp() {
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', startApp);
 } else {
-    // DOM ya listo
-    startApp();
+    // DOM ya listo - usar setTimeout para asegurar que todo se haya renderizado
+    setTimeout(startApp, 0);
 }
+
+// Fallback adicional para iOS: también escuchar el evento load
+window.addEventListener('load', function() {
+    // Solo ejecutar si no se había iniciado antes
+    if (!window.__appStarted) {
+        setTimeout(startApp, 100);
+    }
+});
 
 // SPA navigation removed; site is now multipage
 
@@ -224,7 +269,15 @@ function switchLanguage(lang) {
     if (window.__lastAppliedLanguage === lang) {
         // Aseguramos que los enlaces mantengan el parámetro aunque no volvamos a traducir
         applyLangToLinks(lang);
+        // Actualizar UI del selector
+        updateLanguageSelectorUI(lang);
         return;
+    }
+    
+    // Validar idioma
+    if (lang !== 'es' && lang !== 'en') {
+        console.warn('Invalid language:', lang);
+        lang = 'es'; // fallback
     }
     // Objeto con traducciones
     const translations = {
@@ -682,27 +735,44 @@ function switchLanguage(lang) {
         }
     });
 
-    // Guardar preferencia del usuario
-    localStorage.setItem('preferredLanguage', lang);
+    // Guardar preferencia del usuario con manejo de errores
+    try {
+        localStorage.setItem('preferredLanguage', lang);
+    } catch (e) {
+        console.warn('Could not save language preference to localStorage:', e);
+        // Fallback: usar sessionStorage
+        try {
+            sessionStorage.setItem('preferredLanguage', lang);
+        } catch (e2) {
+            console.warn('Could not save to sessionStorage either:', e2);
+        }
+    }
 
     // Establecer atributo lang en <html>
     if (document.documentElement) {
         document.documentElement.setAttribute('lang', lang);
     }
 
-    // Actualizar la URL actual con ?lang=
+    // Actualizar la URL actual con ?lang= para persistencia
     try {
         const url = new URL(window.location.href);
         url.searchParams.set('lang', lang);
+        // Usar replaceState para no crear entrada en historial
         window.history.replaceState({}, '', url.toString());
     } catch (e) {
-        // no-op en entornos sin URL compatible
+        console.warn('Could not update URL with language parameter:', e);
     }
 
     // Propagar el idioma seleccionado a los enlaces internos
     applyLangToLinks(lang);
+    
+    // Actualizar UI del selector de idioma
+    updateLanguageSelectorUI(lang);
+    
     // Marcar sentinel después de aplicar realmente las traducciones en esta carga de página
     window.__lastAppliedLanguage = lang;
+    
+    console.log('Language switched to:', lang);
 }
 
 // Añadir ?lang= a enlaces internos para mantener el idioma entre páginas
@@ -729,22 +799,66 @@ function applyLangToLinks(lang) {
 
 // Inicializa el idioma al cargar según ?lang o localStorage y prepara enlaces
 function initLanguageSwitcher() {
-    let lang = 'es';
+    let lang = 'es'; // idioma por defecto
+    
     try {
         const params = new URLSearchParams(window.location.search);
         const urlLang = params.get('lang');
         const stored = localStorage.getItem('preferredLanguage');
+        
+        // Prioridad: URL > localStorage > navegador > default
         if (urlLang === 'es' || urlLang === 'en') {
             lang = urlLang;
         } else if (stored === 'es' || stored === 'en') {
             lang = stored;
+        } else {
+            // Detectar idioma del navegador como fallback
+            const browserLang = navigator.language || navigator.userLanguage;
+            if (browserLang && browserLang.toLowerCase().startsWith('en')) {
+                lang = 'en';
+            }
         }
     } catch (e) {
-        // fallback
+        console.warn('Error detecting language:', e);
+        // fallback a español
     }
 
+    // Actualizar el estado visual del selector de idioma
+    updateLanguageSelectorUI(lang);
+    
     // Aplicar idioma detectado
     switchLanguage(lang);
+}
+
+// Nueva función para actualizar la UI del selector de idioma
+function updateLanguageSelectorUI(currentLang) {
+    try {
+        // Actualizar todos los selectores de idioma en la página
+        const esLinks = document.querySelectorAll('[onclick="switchLanguage(\'es\')"]');
+        const enLinks = document.querySelectorAll('[onclick="switchLanguage(\'en\')"]');
+        
+        esLinks.forEach(link => {
+            if (currentLang === 'es') {
+                link.style.color = 'var(--brand-orange)';
+                link.style.fontWeight = 'bold';
+            } else {
+                link.style.color = '';
+                link.style.fontWeight = '';
+            }
+        });
+        
+        enLinks.forEach(link => {
+            if (currentLang === 'en') {
+                link.style.color = 'var(--brand-orange)';
+                link.style.fontWeight = 'bold';
+            } else {
+                link.style.color = '';
+                link.style.fontWeight = '';
+            }
+        });
+    } catch (e) {
+        console.warn('Error updating language selector UI:', e);
+    }
 }
 
 // Efectos de desplazamiento
@@ -826,14 +940,78 @@ function initModals() {
 
 // initModals ya se ejecuta dentro de startApp()
 
-// Inicializar botón de menú móvil cuando el DOM esté cargado
-document.addEventListener('DOMContentLoaded', function() {
+// Inicializar funcionalidades del menú móvil
+function initMobileMenu() {
     const menuToggle = document.getElementById('menu-toggle');
     const mobileMenu = document.getElementById('mobile-menu');
     
-    if (menuToggle && mobileMenu) {
-        menuToggle.addEventListener('click', function() {
-            mobileMenu.classList.toggle('hidden');
-        });
+    if (!menuToggle || !mobileMenu) {
+        console.warn('Mobile menu elements not found');
+        return;
     }
-});
+
+    // Remover eventos previos para evitar duplicados
+    const newMenuToggle = menuToggle.cloneNode(true);
+    menuToggle.parentNode.replaceChild(newMenuToggle, menuToggle);
+    
+    // Agregar evento de toggle con manejo mejorado
+    newMenuToggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const isHidden = mobileMenu.classList.contains('hidden');
+        
+        if (isHidden) {
+            // Mostrar menú
+            mobileMenu.classList.remove('hidden');
+            newMenuToggle.innerHTML = '<i class="fas fa-times text-2xl"></i>';
+            // Prevenir scroll en el body cuando el menú está abierto
+            document.body.style.overflow = 'hidden';
+        } else {
+            // Ocultar menú
+            mobileMenu.classList.add('hidden');
+            newMenuToggle.innerHTML = '<i class="fas fa-bars text-2xl"></i>';
+            // Restaurar scroll
+            document.body.style.overflow = '';
+        }
+    });
+
+    // Cerrar menú al hacer clic fuera
+    document.addEventListener('click', function(e) {
+        if (!mobileMenu.contains(e.target) && !newMenuToggle.contains(e.target)) {
+            mobileMenu.classList.add('hidden');
+            newMenuToggle.innerHTML = '<i class="fas fa-bars text-2xl"></i>';
+            document.body.style.overflow = '';
+        }
+    });
+
+    // Cerrar menú al hacer clic en un enlace
+    const menuLinks = mobileMenu.querySelectorAll('a');
+    menuLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            mobileMenu.classList.add('hidden');
+            newMenuToggle.innerHTML = '<i class="fas fa-bars text-2xl"></i>';
+            document.body.style.overflow = '';
+        });
+    });
+
+    // Cerrar menú con tecla ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && !mobileMenu.classList.contains('hidden')) {
+            mobileMenu.classList.add('hidden');
+            newMenuToggle.innerHTML = '<i class="fas fa-bars text-2xl"></i>';
+            document.body.style.overflow = '';
+        }
+    });
+
+    // Manejar cambios de tamaño de pantalla
+    window.addEventListener('resize', function() {
+        if (window.innerWidth >= 768) { // md breakpoint de Tailwind
+            mobileMenu.classList.add('hidden');
+            newMenuToggle.innerHTML = '<i class="fas fa-bars text-2xl"></i>';
+            document.body.style.overflow = '';
+        }
+    });
+
+    console.log('Mobile menu initialized successfully');
+}

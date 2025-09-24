@@ -2,7 +2,67 @@
 <html lang="es" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    
+    <!-- Meta tags específicos para iOS/Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" co        <!-- Landbot Chat Widget - Optimizado para iOS -->
+        <script>
+// Inicialización mejorada de Landbot con mejor soporte para iOS
+var myLandbot;
+var landbotInitialized = false;
+
+function initLandbot() {
+  if (landbotInitialized || myLandbot) return;
+  landbotInitialized = true;
+  
+  try {
+    var s = document.createElement('script');
+    s.type = "module";
+    s.async = true;
+    s.addEventListener('load', function() {
+      try {
+        myLandbot = new Landbot.Livechat({
+          configUrl: 'https://storage.googleapis.com/landbot.online/v3/H-3136435-ZG81F5G8KP37MEXH/index.json',
+        });
+        console.log('Landbot initialized successfully');
+      } catch (e) {
+        console.warn('Error initializing Landbot:', e);
+        landbotInitialized = false; // Permitir reintentos
+      }
+    });
+    s.addEventListener('error', function() {
+      console.warn('Error loading Landbot script');
+      landbotInitialized = false; // Permitir reintentos
+    });
+    s.src = 'https://cdn.landbot.io/landbot-3/landbot-3.0.0.mjs';
+    document.head.appendChild(s);
+  } catch (e) {
+    console.warn('Error creating Landbot script:', e);
+    landbotInitialized = false;
+  }
+}
+
+// Múltiples eventos para activar el chatbot (mejor compatibilidad con iOS)
+var events = ['mouseover', 'touchstart', 'click', 'scroll'];
+events.forEach(function(event) {
+  window.addEventListener(event, function() {
+    if (!landbotInitialized) {
+      setTimeout(initLandbot, 100);
+    }
+  }, { once: true, passive: true });
+});
+
+// Fallback: inicializar después de un tiempo si no hay interacción
+setTimeout(function() {
+  if (!landbotInitialized) {
+    initLandbot();
+  }
+}, 5000);
+        </script>
+    <meta name="apple-mobile-web-app-title" content="SR Global">
+    <meta name="format-detection" content="telephone=no">
+    
     <!-- Bootstrap temprano del idioma antes de que carguen otros scripts -->
     <script>
         (function(){
@@ -342,15 +402,37 @@
 
     <!-- Script: aplicar idioma desde ?lang=es|en al cargar -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        // Script de inicialización mejorado para iOS
+        function initializeApp() {
             try {
                 const params = new URLSearchParams(window.location.search);
                 const lang = params.get('lang');
                 if (lang && (lang === 'es' || lang === 'en')) {
-                    if (typeof switchLanguage === 'function') switchLanguage(lang);
+                    if (typeof switchLanguage === 'function') {
+                        switchLanguage(lang);
+                    } else {
+                        // Reintentar después de que los scripts se carguen
+                        setTimeout(function() {
+                            if (typeof switchLanguage === 'function') {
+                                switchLanguage(lang);
+                            }
+                        }, 500);
+                    }
                 }
-            } catch {}
-        });
+            } catch (e) {
+                console.warn('Error initializing language:', e);
+            }
+        }
+
+        // Múltiples puntos de entrada para mayor compatibilidad
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeApp);
+        } else {
+            initializeApp();
+        }
+        
+        // Fallback adicional
+        window.addEventListener('load', initializeApp);
     </script>
 
         <!-- Landbot Chat Widget -->

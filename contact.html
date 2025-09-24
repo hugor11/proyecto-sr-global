@@ -5,7 +5,14 @@
   <script>(function(){try{var p=new URLSearchParams(window.location.search);var urlLang=p.get('lang');var stored=localStorage.getItem('preferredLanguage');var lang=(urlLang==='es'||urlLang==='en')?urlLang:((stored==='es'||stored==='en')?stored:'es');document.documentElement.setAttribute('lang',lang);if(!urlLang){var u=new URL(window.location.href);u.searchParams.set('lang',lang);window.history.replaceState({},'',u.toString());}}catch(e){}})();</script>
   <!-- fin bootstrap idioma -->
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+  
+  <!-- Meta tags específicos para iOS/Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="SR Global">
+  <meta name="format-detection" content="telephone=no">
+  
   <title data-lang-key="titleContact">Contacto | SR Global Experiences</title>
   <meta name="description" data-lang-key="metaContact" content="Contacta a SR Global Experiences: correo, teléfono y formulario de contacto.">
   <link rel="canonical" href="https://srglobalexperiences.com/contact.html" />
