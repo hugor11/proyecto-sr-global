@@ -1,20 +1,22 @@
 // SR Global Experiences - Script Principal
 
-// Polyfills para compatibilidad con iOS/Safari
+// Polyfills y correcciones específicas para iOS/Safari
 (function() {
-    // Polyfill para closest() en Safari más antiguo
+    'use strict';
+    
+    // 1. Polyfill para closest() en Safari más antiguo
     if (!Element.prototype.closest) {
         Element.prototype.closest = function(s) {
             var el = this;
             do {
-                if (el.matches(s)) return el;
+                if (el.matches && el.matches(s)) return el;
                 el = el.parentElement || el.parentNode;
             } while (el !== null && el.nodeType === 1);
             return null;
         };
     }
     
-    // Polyfill para matches() en Safari más antiguo
+    // 2. Polyfill para matches() en Safari más antiguo
     if (!Element.prototype.matches) {
         Element.prototype.matches = Element.prototype.matchesSelector || 
                                   Element.prototype.webkitMatchesSelector || 
@@ -22,18 +24,39 @@
                                   Element.prototype.msMatchesSelector;
     }
     
-    // Fix para viewport height en iOS
+    // 3. Fix para viewport height en iOS (problema del 100vh)
     function setVHProperty() {
-        const vh = window.innerHeight * 0.01;
-        document.documentElement.style.setProperty('--vh', `${vh}px`);
+        try {
+            const vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+        } catch (e) {
+            console.warn('Error setting VH property:', e);
+        }
     }
     
-    // Configurar al cargar y al cambiar orientación
+    // 4. Configurar VH al cargar y al cambiar orientación
     setVHProperty();
-    window.addEventListener('resize', setVHProperty);
+    window.addEventListener('resize', setVHProperty, { passive: true });
     window.addEventListener('orientationchange', function() {
-        setTimeout(setVHProperty, 100);
-    });
+        setTimeout(setVHProperty, 200);
+    }, { passive: true });
+    
+    // 5. Fix para eventos touch en iOS
+    if ('ontouchstart' in window) {
+        document.documentElement.classList.add('touch-device');
+    }
+    
+    // 6. Prevenir zoom accidental en iOS
+    document.addEventListener('gesturestart', function(e) {
+        e.preventDefault();
+    }, { passive: false });
+    
+    // 7. Fix para scroll momentum en iOS
+    if (window.navigator.userAgent.match(/(iPad|iPhone|iPod)/g)) {
+        document.documentElement.style.webkitOverflowScrolling = 'touch';
+    }
+    
+    console.log('iOS/Safari polyfills and fixes loaded');
 })();
 
 // Evitar doble inicialización
@@ -58,21 +81,60 @@ function startApp() {
     initGAInteractions();
 }
 
-// Arranque seguro, incluso si el script se carga después del DOMContentLoaded
+// Arranque seguro y robusto para todos los dispositivos, especialmente iOS
+function safeStartApp() {
+    // Verificar que el DOM esté completamente listo
+    if (document.readyState !== 'complete' && document.readyState !== 'interactive') {
+        console.log('DOM not ready, waiting...');
+        return false;
+    }
+    
+    // Verificar que las dependencias básicas estén disponibles
+    if (typeof document.querySelector !== 'function') {
+        console.warn('Basic DOM methods not available');
+        return false;
+    }
+    
+    try {
+        startApp();
+        return true;
+    } catch (e) {
+        console.error('Error starting app:', e);
+        // Reintentar después de un delay
+        setTimeout(function() {
+            try {
+                startApp();
+            } catch (e2) {
+                console.error('Second attempt failed:', e2);
+            }
+        }, 1000);
+        return false;
+    }
+}
+
+// Múltiples estrategias de inicialización para máxima compatibilidad
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', startApp);
+    document.addEventListener('DOMContentLoaded', safeStartApp, { once: true });
 } else {
     // DOM ya listo - usar setTimeout para asegurar que todo se haya renderizado
-    setTimeout(startApp, 0);
+    setTimeout(safeStartApp, 0);
 }
 
 // Fallback adicional para iOS: también escuchar el evento load
 window.addEventListener('load', function() {
     // Solo ejecutar si no se había iniciado antes
     if (!window.__appStarted) {
-        setTimeout(startApp, 100);
+        setTimeout(safeStartApp, 200);
     }
-});
+}, { once: true });
+
+// Fallback final: forzar inicio después de 3 segundos si nada más funcionó
+setTimeout(function() {
+    if (!window.__appStarted) {
+        console.warn('Forcing app start after timeout');
+        safeStartApp();
+    }
+}, 3000);
 
 // SPA navigation removed; site is now multipage
 
@@ -263,22 +325,48 @@ function initGAInteractions() {
     }, true);
 }
 
-// Sistema de cambio de idioma
+// Sistema de cambio de idioma con persistencia robusta para móviles
 function switchLanguage(lang) {
-    // Nueva guarda idempotente basada en un sentinel propio, no en <html lang>
-    if (window.__lastAppliedLanguage === lang) {
-        // Aseguramos que los enlaces mantengan el parámetro aunque no volvamos a traducir
-        applyLangToLinks(lang);
-        // Actualizar UI del selector
-        updateLanguageSelectorUI(lang);
-        return;
-    }
-    
     // Validar idioma
     if (lang !== 'es' && lang !== 'en') {
         console.warn('Invalid language:', lang);
         lang = 'es'; // fallback
     }
+
+    // Nueva guarda idempotente basada en un sentinel propio
+    if (window.__lastAppliedLanguage === lang) {
+        // Aseguramos que los enlaces mantengan el parámetro aunque no volvamos a traducir
+        applyLangToLinks(lang);
+        updateLanguageSelectorUI(lang);
+        return;
+    }
+
+    // Guardar en múltiples ubicaciones para máxima compatibilidad móvil
+    const saveLanguagePreference = (language) => {
+        try {
+            // Prioridad 1: localStorage
+            localStorage.setItem('preferredLanguage', language);
+            localStorage.setItem('langTimestamp', Date.now().toString());
+        } catch (e) {
+            console.warn('localStorage failed:', e);
+        }
+        
+        try {
+            // Prioridad 2: sessionStorage
+            sessionStorage.setItem('preferredLanguage', language);
+        } catch (e) {
+            console.warn('sessionStorage failed:', e);
+        }
+        
+        try {
+            // Prioridad 3: Cookie como fallback para iOS
+            document.cookie = `preferredLanguage=${language}; path=/; max-age=31536000; SameSite=Lax`;
+        } catch (e) {
+            console.warn('Cookie failed:', e);
+        }
+    };
+
+    saveLanguagePreference(lang);
     // Objeto con traducciones
     const translations = {
         es: {
@@ -797,6 +885,50 @@ function applyLangToLinks(lang) {
     });
 }
 
+// Función mejorada para recuperar idioma guardado (compatible con iOS)
+function getStoredLanguage() {
+    let storedLang = null;
+    
+    // Intentar localStorage primero
+    try {
+        storedLang = localStorage.getItem('preferredLanguage');
+        const timestamp = localStorage.getItem('langTimestamp');
+        
+        // Verificar si no es muy antiguo (más de 30 días)
+        if (timestamp && Date.now() - parseInt(timestamp) > 30 * 24 * 60 * 60 * 1000) {
+            localStorage.removeItem('preferredLanguage');
+            localStorage.removeItem('langTimestamp');
+            storedLang = null;
+        }
+    } catch (e) {
+        console.warn('Error accessing localStorage:', e);
+    }
+    
+    // Fallback a sessionStorage
+    if (!storedLang) {
+        try {
+            storedLang = sessionStorage.getItem('preferredLanguage');
+        } catch (e) {
+            console.warn('Error accessing sessionStorage:', e);
+        }
+    }
+    
+    // Fallback a cookie
+    if (!storedLang) {
+        try {
+            const cookies = document.cookie.split(';');
+            const langCookie = cookies.find(cookie => cookie.trim().startsWith('preferredLanguage='));
+            if (langCookie) {
+                storedLang = langCookie.split('=')[1];
+            }
+        } catch (e) {
+            console.warn('Error accessing cookies:', e);
+        }
+    }
+    
+    return (storedLang === 'es' || storedLang === 'en') ? storedLang : null;
+}
+
 // Inicializa el idioma al cargar según ?lang o localStorage y prepara enlaces
 function initLanguageSwitcher() {
     let lang = 'es'; // idioma por defecto
@@ -804,12 +936,12 @@ function initLanguageSwitcher() {
     try {
         const params = new URLSearchParams(window.location.search);
         const urlLang = params.get('lang');
-        const stored = localStorage.getItem('preferredLanguage');
+        const stored = getStoredLanguage();
         
-        // Prioridad: URL > localStorage > navegador > default
+        // Prioridad: URL > localStorage/sessionStorage/cookie > navegador > default
         if (urlLang === 'es' || urlLang === 'en') {
             lang = urlLang;
-        } else if (stored === 'es' || stored === 'en') {
+        } else if (stored) {
             lang = stored;
         } else {
             // Detectar idioma del navegador como fallback
@@ -820,7 +952,6 @@ function initLanguageSwitcher() {
         }
     } catch (e) {
         console.warn('Error detecting language:', e);
-        // fallback a español
     }
 
     // Actualizar el estado visual del selector de idioma
@@ -828,6 +959,8 @@ function initLanguageSwitcher() {
     
     // Aplicar idioma detectado
     switchLanguage(lang);
+    
+    console.log('Language initialized:', lang);
 }
 
 // Nueva función para actualizar la UI del selector de idioma
@@ -940,7 +1073,7 @@ function initModals() {
 
 // initModals ya se ejecuta dentro de startApp()
 
-// Inicializar funcionalidades del menú móvil
+// Inicializar funcionalidades del menú móvil con máxima compatibilidad
 function initMobileMenu() {
     const menuToggle = document.getElementById('menu-toggle');
     const mobileMenu = document.getElementById('mobile-menu');
@@ -950,68 +1083,110 @@ function initMobileMenu() {
         return;
     }
 
+    // Estado del menú
+    let menuOpen = false;
+
+    // Función para abrir menú
+    function openMenu() {
+        if (menuOpen) return;
+        
+        mobileMenu.classList.remove('hidden');
+        mobileMenu.style.display = 'block';
+        menuToggle.innerHTML = '<i class="fas fa-times text-2xl"></i>';
+        menuToggle.setAttribute('aria-expanded', 'true');
+        
+        // Prevenir scroll en el body
+        document.body.style.overflow = 'hidden';
+        document.documentElement.style.overflow = 'hidden';
+        
+        menuOpen = true;
+        console.log('Menu opened');
+    }
+
+    // Función para cerrar menú
+    function closeMenu() {
+        if (!menuOpen) return;
+        
+        mobileMenu.classList.add('hidden');
+        mobileMenu.style.display = 'none';
+        menuToggle.innerHTML = '<i class="fas fa-bars text-2xl"></i>';
+        menuToggle.setAttribute('aria-expanded', 'false');
+        
+        // Restaurar scroll
+        document.body.style.overflow = '';
+        document.documentElement.style.overflow = '';
+        
+        menuOpen = false;
+        console.log('Menu closed');
+    }
+
+    // Toggle del menú
+    function toggleMenu(e) {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        if (menuOpen) {
+            closeMenu();
+        } else {
+            openMenu();
+        }
+    }
+
     // Remover eventos previos para evitar duplicados
     const newMenuToggle = menuToggle.cloneNode(true);
     menuToggle.parentNode.replaceChild(newMenuToggle, menuToggle);
     
-    // Agregar evento de toggle con manejo mejorado
-    newMenuToggle.addEventListener('click', function(e) {
+    // Agregar múltiples tipos de eventos para máxima compatibilidad
+    newMenuToggle.addEventListener('click', toggleMenu, { passive: false });
+    newMenuToggle.addEventListener('touchend', function(e) {
         e.preventDefault();
-        e.stopPropagation();
-        
-        const isHidden = mobileMenu.classList.contains('hidden');
-        
-        if (isHidden) {
-            // Mostrar menú
-            mobileMenu.classList.remove('hidden');
-            newMenuToggle.innerHTML = '<i class="fas fa-times text-2xl"></i>';
-            // Prevenir scroll en el body cuando el menú está abierto
-            document.body.style.overflow = 'hidden';
-        } else {
-            // Ocultar menú
-            mobileMenu.classList.add('hidden');
-            newMenuToggle.innerHTML = '<i class="fas fa-bars text-2xl"></i>';
-            // Restaurar scroll
-            document.body.style.overflow = '';
-        }
-    });
+        toggleMenu(e);
+    }, { passive: false });
+
+    // Atributos de accesibilidad
+    newMenuToggle.setAttribute('role', 'button');
+    newMenuToggle.setAttribute('aria-expanded', 'false');
+    newMenuToggle.setAttribute('aria-controls', 'mobile-menu');
 
     // Cerrar menú al hacer clic fuera
     document.addEventListener('click', function(e) {
-        if (!mobileMenu.contains(e.target) && !newMenuToggle.contains(e.target)) {
-            mobileMenu.classList.add('hidden');
-            newMenuToggle.innerHTML = '<i class="fas fa-bars text-2xl"></i>';
-            document.body.style.overflow = '';
+        if (menuOpen && !mobileMenu.contains(e.target) && !newMenuToggle.contains(e.target)) {
+            closeMenu();
         }
-    });
+    }, { passive: true });
 
     // Cerrar menú al hacer clic en un enlace
     const menuLinks = mobileMenu.querySelectorAll('a');
     menuLinks.forEach(link => {
-        link.addEventListener('click', function() {
-            mobileMenu.classList.add('hidden');
-            newMenuToggle.innerHTML = '<i class="fas fa-bars text-2xl"></i>';
-            document.body.style.overflow = '';
-        });
+        link.addEventListener('click', closeMenu, { passive: true });
+        // También para touch events
+        link.addEventListener('touchend', closeMenu, { passive: true });
     });
 
     // Cerrar menú con tecla ESC
     document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && !mobileMenu.classList.contains('hidden')) {
-            mobileMenu.classList.add('hidden');
-            newMenuToggle.innerHTML = '<i class="fas fa-bars text-2xl"></i>';
-            document.body.style.overflow = '';
+        if (e.key === 'Escape' && menuOpen) {
+            closeMenu();
         }
-    });
+    }, { passive: true });
 
     // Manejar cambios de tamaño de pantalla
+    let resizeTimeout;
     window.addEventListener('resize', function() {
-        if (window.innerWidth >= 768) { // md breakpoint de Tailwind
-            mobileMenu.classList.add('hidden');
-            newMenuToggle.innerHTML = '<i class="fas fa-bars text-2xl"></i>';
-            document.body.style.overflow = '';
-        }
-    });
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(function() {
+            if (window.innerWidth >= 768) { // md breakpoint de Tailwind
+                closeMenu();
+            }
+        }, 100);
+    }, { passive: true });
+
+    // Manejar cambio de orientación en móviles
+    window.addEventListener('orientationchange', function() {
+        setTimeout(closeMenu, 200);
+    }, { passive: true });
 
     console.log('Mobile menu initialized successfully');
 }

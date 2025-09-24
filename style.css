@@ -15,28 +15,32 @@
 }
 
 /* Fix para iOS: evitar zoom al hacer tap en inputs */
-input, select, textarea {
-  font-size: 16px;
+input, select, textarea, button {
+  font-size: 16px !important; /* Prevenir zoom en iOS */
+}
+
+/* Fix para dispositivos touch */
+.touch-device button,
+.touch-device a,
+.touch-device [role="button"] {
+  cursor: pointer;
+}
+
+/* Mejores estilos de touch para iOS */
+button, a, [role="button"] {
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation; /* Mejor respuesta touch */
 }
 
 /* Fix para iOS: mejor rendering de fuentes */
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-/* Fix para iOS: evitar selección accidental de texto */
-.no-select {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
-/* Fix para iOS: mejor handling de touch */
-button, a {
-  -webkit-touch-callout: none;
-  -webkit-tap-highlight-color: transparent;
+  /* Fix para scroll en iOS */
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Estilos de fuentes */
@@ -157,6 +161,49 @@ button, a {
   max-height: calc(var(--vh, 1vh) * 100 - 80px);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch; /* Smooth scrolling en iOS */
+  /* Asegurar que el menú esté por encima de todo */
+  z-index: 9999;
+  position: relative;
+}
+
+/* Mejoras para el botón del menú móvil */
+#menu-toggle {
+  /* Mejor área de tap para móviles */
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Feedback visual mejorado */
+  transition: all 0.2s ease;
+}
+
+#menu-toggle:active {
+  transform: scale(0.95);
+  opacity: 0.7;
+}
+
+/* Mejoras específicas para iOS Safari */
+@supports (-webkit-touch-callout: none) {
+  /* Esto solo se aplica en iOS Safari */
+  body {
+    /* Fix para el bounce scroll en iOS */
+    -webkit-overflow-scrolling: touch;
+    overflow-x: hidden;
+  }
+  
+  /* Fix para inputs en iOS */
+  input, textarea, select {
+    -webkit-appearance: none;
+    appearance: none;
+    border-radius: 0;
+  }
+  
+  /* Fix para el menú en iOS */
+  #mobile-menu {
+    -webkit-transform: translate3d(0,0,0);
+    transform: translate3d(0,0,0);
+  }
 }
 
 /* Estilos para el formulario de contacto */
