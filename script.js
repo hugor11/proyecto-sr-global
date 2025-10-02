@@ -967,28 +967,38 @@ function initLanguageSwitcher() {
 function updateLanguageSelectorUI(currentLang) {
     try {
         // Actualizar todos los selectores de idioma en la página
-        const esLinks = document.querySelectorAll('[onclick="switchLanguage(\'es\')"]');
-        const enLinks = document.querySelectorAll('[onclick="switchLanguage(\'en\')"]');
+        const esLinks = document.querySelectorAll('[onclick*="switchLanguage(\'es\')"]');
+        const enLinks = document.querySelectorAll('[onclick*="switchLanguage(\'en\')"]');
         
         esLinks.forEach(link => {
             if (currentLang === 'es') {
+                link.classList.add('lang-selector-active');
                 link.style.color = 'var(--brand-orange)';
-                link.style.fontWeight = 'bold';
+                link.style.fontWeight = '900';
+                link.setAttribute('aria-current', 'true');
             } else {
+                link.classList.remove('lang-selector-active');
                 link.style.color = '';
                 link.style.fontWeight = '';
+                link.removeAttribute('aria-current');
             }
         });
         
         enLinks.forEach(link => {
             if (currentLang === 'en') {
+                link.classList.add('lang-selector-active');
                 link.style.color = 'var(--brand-orange)';
-                link.style.fontWeight = 'bold';
+                link.style.fontWeight = '900';
+                link.setAttribute('aria-current', 'true');
             } else {
+                link.classList.remove('lang-selector-active');
                 link.style.color = '';
                 link.style.fontWeight = '';
+                link.removeAttribute('aria-current');
             }
         });
+        
+        console.log('Language selector UI updated to:', currentLang);
     } catch (e) {
         console.warn('Error updating language selector UI:', e);
     }
@@ -1083,6 +1093,14 @@ function initMobileMenu() {
         return;
     }
 
+    // Crear overlay si no existe
+    let overlay = document.querySelector('.menu-overlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.className = 'menu-overlay';
+        document.body.appendChild(overlay);
+    }
+
     // Estado del menú
     let menuOpen = false;
 
@@ -1094,10 +1112,18 @@ function initMobileMenu() {
         mobileMenu.style.display = 'block';
         menuToggle.innerHTML = '<i class="fas fa-times text-2xl"></i>';
         menuToggle.setAttribute('aria-expanded', 'true');
+        menuToggle.setAttribute('aria-label', 'Cerrar menú');
+        
+        // Mostrar overlay
+        overlay.classList.add('active');
         
         // Prevenir scroll en el body
         document.body.style.overflow = 'hidden';
         document.documentElement.style.overflow = 'hidden';
+        
+        // Añadir clase al nav para indicar estado
+        const navbar = document.getElementById('navbar');
+        if (navbar) navbar.classList.add('menu-open');
         
         menuOpen = true;
         console.log('Menu opened');
@@ -1111,10 +1137,18 @@ function initMobileMenu() {
         mobileMenu.style.display = 'none';
         menuToggle.innerHTML = '<i class="fas fa-bars text-2xl"></i>';
         menuToggle.setAttribute('aria-expanded', 'false');
+        menuToggle.setAttribute('aria-label', 'Abrir menú');
+        
+        // Ocultar overlay
+        overlay.classList.remove('active');
         
         // Restaurar scroll
         document.body.style.overflow = '';
         document.documentElement.style.overflow = '';
+        
+        // Remover clase del nav
+        const navbar = document.getElementById('navbar');
+        if (navbar) navbar.classList.remove('menu-open');
         
         menuOpen = false;
         console.log('Menu closed');
@@ -1149,6 +1183,10 @@ function initMobileMenu() {
     newMenuToggle.setAttribute('role', 'button');
     newMenuToggle.setAttribute('aria-expanded', 'false');
     newMenuToggle.setAttribute('aria-controls', 'mobile-menu');
+    newMenuToggle.setAttribute('aria-label', 'Abrir menú');
+
+    // Cerrar menú al hacer clic en el overlay
+    overlay.addEventListener('click', closeMenu, { passive: true });
 
     // Cerrar menú al hacer clic fuera
     document.addEventListener('click', function(e) {
@@ -1160,9 +1198,14 @@ function initMobileMenu() {
     // Cerrar menú al hacer clic en un enlace
     const menuLinks = mobileMenu.querySelectorAll('a');
     menuLinks.forEach(link => {
-        link.addEventListener('click', closeMenu, { passive: true });
+        link.addEventListener('click', function() {
+            // Pequeño delay para que se vea la transición
+            setTimeout(closeMenu, 100);
+        }, { passive: true });
         // También para touch events
-        link.addEventListener('touchend', closeMenu, { passive: true });
+        link.addEventListener('touchend', function() {
+            setTimeout(closeMenu, 100);
+        }, { passive: true });
     });
 
     // Cerrar menú con tecla ESC

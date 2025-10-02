@@ -61,6 +61,14 @@ body {
   color: var(--brand-dark);
 }
 
+/* Selector de idioma - estado activo */
+.lang-selector-active {
+  color: var(--brand-orange) !important;
+  font-weight: 900 !important;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
 .text-brand-turquoise {
   color: var(--brand-turquoise);
 }
@@ -166,6 +174,25 @@ body {
   position: relative;
 }
 
+/* Overlay oscuro cuando el menú está abierto */
+.menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9998;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.menu-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
 /* Mejoras para el botón del menú móvil */
 #menu-toggle {
   /* Mejor área de tap para móviles */
@@ -176,11 +203,52 @@ body {
   justify-content: center;
   /* Feedback visual mejorado */
   transition: all 0.2s ease;
+  cursor: pointer;
 }
 
 #menu-toggle:active {
   transform: scale(0.95);
   opacity: 0.7;
+}
+
+#menu-toggle i {
+  transition: transform 0.3s ease;
+}
+
+/* Animación del menú móvil */
+#mobile-menu {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: top;
+}
+
+#mobile-menu.hidden {
+  animation: slideUp 0.3s ease forwards;
+}
+
+#mobile-menu:not(.hidden) {
+  animation: slideDown 0.3s ease forwards;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
 }
 
 /* Mejoras específicas para iOS Safari */
