@@ -64,24 +64,7 @@ setTimeout(function() {
     <meta name="format-detection" content="telephone=no">
     
     <!-- Bootstrap temprano del idioma antes de que carguen otros scripts -->
-    <script>
-        (function(){
-            try {
-                var params = new URLSearchParams(window.location.search);
-                var urlLang = params.get('lang');
-                var stored = localStorage.getItem('preferredLanguage');
-                var lang = (urlLang==='es'||urlLang==='en') ? urlLang : ((stored==='es'||stored==='en') ? stored : 'es');
-                // Fijar lang en <html> inmediatamente para evitar parpadeos
-                document.documentElement.setAttribute('lang', lang);
-                // Si no hay ?lang= en la URL y tenemos preferencia, inyectarlo para navegación consistente
-                if(!urlLang){
-                    var u = new URL(window.location.href);
-                    u.searchParams.set('lang', lang);
-                    window.history.replaceState({},'',u.toString());
-                }
-            } catch(e) { /* silencioso */ }
-        })();
-    </script>
+    
     <title>SR Global Experiences - Diseñamos Tu Viaje Perfecto</title>
     
     <!-- Metadatos para SEO -->
