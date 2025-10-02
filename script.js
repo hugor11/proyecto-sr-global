@@ -46,10 +46,8 @@
         document.documentElement.classList.add('touch-device');
     }
     
-    // 6. Prevenir zoom accidental en iOS
-    document.addEventListener('gesturestart', function(e) {
-        e.preventDefault();
-    }, { passive: false });
+    // 6. [REMOVIDO] gesturestart preventDefault - causaba conflictos con navegación
+    // NO prevenir gestures - dejar comportamiento nativo del navegador
     
     // 7. Fix para scroll momentum en iOS
     if (window.navigator.userAgent.match(/(iPad|iPhone|iPod)/g)) {
@@ -1083,7 +1081,17 @@ function initModals() {
 
 // initModals ya se ejecuta dentro de startApp()
 
-// Inicializar funcionalidades del menú móvil con máxima compatibilidad
+// ==============================================================================
+// MENÚ HAMBURGUESA MÓVIL - REFACTORIZADO (Simplificado y Funcional)
+// ==============================================================================
+// VERSIÓN ANTERIOR COMENTADA - VER GIT HISTORY SI NECESARIO
+// Problemas encontrados en versión anterior:
+// - preventDefault/stopPropagation en toggle causaba conflictos
+// - Clonación de nodos (anti-pattern)
+// - Overlay innecesario
+// - Múltiples eventos touch redundantes
+// - Gestión de overflow: hidden problemática
+// ==============================================================================
 function initMobileMenu() {
     const menuToggle = document.getElementById('menu-toggle');
     const mobileMenu = document.getElementById('mobile-menu');
@@ -1093,167 +1101,96 @@ function initMobileMenu() {
         return;
     }
 
-    // Crear overlay si no existe
-    let overlay = document.querySelector('.menu-overlay');
-    if (!overlay) {
-        overlay = document.createElement('div');
-        overlay.className = 'menu-overlay';
-        document.body.appendChild(overlay);
-    }
+    console.log('Initializing mobile menu (refactored version)');
+    
+    // Estado del menú - simplificado
+    let isOpen = false;
 
-    // Estado del menú
-    let menuOpen = false;
-
-    // Función para abrir menú
+    // Función para abrir el menú - simplificada
     function openMenu() {
-        if (menuOpen) return;
-        
+        isOpen = true;
         mobileMenu.classList.remove('hidden');
         mobileMenu.style.display = 'block';
-        menuToggle.innerHTML = '<i class="fas fa-times text-2xl"></i>';
+        menuToggle.querySelector('i').className = 'fas fa-times text-2xl';
         menuToggle.setAttribute('aria-expanded', 'true');
         menuToggle.setAttribute('aria-label', 'Cerrar menú');
-        
-        // Mostrar overlay
-        overlay.classList.add('active');
-        
-        // Prevenir scroll en el body
-        document.body.style.overflow = 'hidden';
-        document.documentElement.style.overflow = 'hidden';
-        
-        // Añadir clase al nav para indicar estado
-        const navbar = document.getElementById('navbar');
-        if (navbar) navbar.classList.add('menu-open');
-        
-        menuOpen = true;
         console.log('Menu opened');
     }
 
-    // Función para cerrar menú
+    // Función para cerrar el menú - simplificada
     function closeMenu() {
-        if (!menuOpen) return;
-        
+        isOpen = false;
         mobileMenu.classList.add('hidden');
         mobileMenu.style.display = 'none';
-        menuToggle.innerHTML = '<i class="fas fa-bars text-2xl"></i>';
+        menuToggle.querySelector('i').className = 'fas fa-bars text-2xl';
         menuToggle.setAttribute('aria-expanded', 'false');
         menuToggle.setAttribute('aria-label', 'Abrir menú');
-        
-        // Ocultar overlay
-        overlay.classList.remove('active');
-        
-        // Restaurar scroll
-        document.body.style.overflow = '';
-        document.documentElement.style.overflow = '';
-        
-        // Remover clase del nav
-        const navbar = document.getElementById('navbar');
-        if (navbar) navbar.classList.remove('menu-open');
-        
-        menuOpen = false;
         console.log('Menu closed');
     }
 
-    // Toggle del menú
-    function toggleMenu(e) {
-        // Solo prevenir default si es el botón toggle, no los enlaces
-        if (e && e.currentTarget === newMenuToggle) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
-        
-        if (menuOpen) {
+    // 1. Toggle del menú - SIMPLE: Solo evento CLICK (iOS convierte touch a click automáticamente)
+    // NO más preventDefault ni stopPropagation - dejar comportamiento nativo
+    menuToggle.addEventListener('click', function() {
+        if (isOpen) {
             closeMenu();
         } else {
             openMenu();
         }
-    }
-
-    // Remover eventos previos para evitar duplicados
-    const newMenuToggle = menuToggle.cloneNode(true);
-    menuToggle.parentNode.replaceChild(newMenuToggle, menuToggle);
-    
-    // Agregar múltiples tipos de eventos para máxima compatibilidad
-    newMenuToggle.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        toggleMenu(e);
-    }, { passive: false });
-    
-    newMenuToggle.addEventListener('touchend', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        toggleMenu(e);
-    }, { passive: false });
-
-    // Atributos de accesibilidad
-    newMenuToggle.setAttribute('role', 'button');
-    newMenuToggle.setAttribute('aria-expanded', 'false');
-    newMenuToggle.setAttribute('aria-controls', 'mobile-menu');
-    newMenuToggle.setAttribute('aria-label', 'Abrir menú');
-
-    // Cerrar menú al hacer clic en el overlay
-    overlay.addEventListener('click', closeMenu, { passive: true });
-
-    // Cerrar menú al hacer clic fuera
-    document.addEventListener('click', function(e) {
-        if (menuOpen && !mobileMenu.contains(e.target) && !newMenuToggle.contains(e.target)) {
-            closeMenu();
-        }
-    }, { passive: true });
-
-    // Cerrar menú al hacer clic en un enlace
-    const menuLinks = mobileMenu.querySelectorAll('a');
-    menuLinks.forEach(link => {
-        // Click event - NO usar preventDefault para permitir navegación
-        link.addEventListener('click', function(e) {
-            // NO prevenir default - dejar que el navegador maneje el enlace
-            // Solo cerrar el menú DESPUÉS de un pequeño delay
-            console.log('Menu link clicked:', this.href);
-            
-            // Cerrar el menú inmediatamente para mejor UX
-            closeMenu();
-        }, { passive: true });
-        
-        // Touch event para iOS - manejo especial
-        link.addEventListener('touchstart', function(e) {
-            // Añadir clase para feedback visual
-            this.style.backgroundColor = '#f3f4f6';
-        }, { passive: true });
-        
-        link.addEventListener('touchend', function(e) {
-            // Quitar feedback visual
-            this.style.backgroundColor = '';
-            
-            // NO prevenir default - dejar que el navegador maneje el enlace
-            // Cerrar menú inmediatamente
-            console.log('Menu link touched:', this.href);
-            closeMenu();
-        }, { passive: true });
+        console.log('Menu toggled, isOpen:', isOpen);
     });
 
-    // Cerrar menú con tecla ESC
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && menuOpen) {
+    // 2. Cerrar menú al hacer click fuera del menú
+    document.addEventListener('click', function(e) {
+        // Solo si el menú está abierto
+        if (!isOpen) return;
+        
+        // Verificar si el click fue fuera del menú Y fuera del toggle
+        const clickedInsideMenu = mobileMenu.contains(e.target);
+        const clickedOnToggle = menuToggle.contains(e.target);
+        
+        if (!clickedInsideMenu && !clickedOnToggle) {
             closeMenu();
+            console.log('Menu closed (clicked outside)');
         }
-    }, { passive: true });
+    });
 
-    // Manejar cambios de tamaño de pantalla
+    // 3. Cerrar menú al hacer click en cualquier enlace - SIMPLE: Solo click, sin touch events
+    const menuLinks = mobileMenu.querySelectorAll('a');
+    menuLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            // NO preventDefault - permitir navegación natural del navegador
+            console.log('Menu link clicked, navigating to:', this.href);
+            
+            // Cerrar menú ANTES de que navegue (el navegador navegará después)
+            closeMenu();
+        });
+    });
+
+    // 4. Cerrar menú con tecla ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && isOpen) {
+            closeMenu();
+            console.log('Menu closed (ESC key)');
+        }
+    });
+
+    // 5. Manejar cambios de tamaño de pantalla (cerrar menú en desktop)
     let resizeTimeout;
     window.addEventListener('resize', function() {
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(function() {
-            if (window.innerWidth >= 768) { // md breakpoint de Tailwind
+            if (window.innerWidth >= 768 && isOpen) { // md breakpoint de Tailwind
                 closeMenu();
+                console.log('Menu closed (window resized to desktop)');
             }
         }, 100);
-    }, { passive: true });
+    });
+    
+    // 6. Atributos de accesibilidad iniciales
+    menuToggle.setAttribute('role', 'button');
+    menuToggle.setAttribute('aria-expanded', 'false');
+    menuToggle.setAttribute('aria-controls', 'mobile-menu');
+    menuToggle.setAttribute('aria-label', 'Abrir menú');
 
-    // Manejar cambio de orientación en móviles
-    window.addEventListener('orientationchange', function() {
-        setTimeout(closeMenu, 200);
-    }, { passive: true });
-
-    console.log('Mobile menu initialized successfully');
+    console.log('Mobile menu initialized successfully (refactored)');
 }
