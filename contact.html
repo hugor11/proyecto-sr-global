@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html lang="es" class="scroll-smooth">
 <head>
-  <!-- Bootstrap temprano del idioma -->
-  <script>(function(){try{var p=new URLSearchParams(window.location.search);var urlLang=p.get('lang');var stored=localStorage.getItem('preferredLanguage');var lang=(urlLang==='es'||urlLang==='en')?urlLang:((stored==='es'||stored==='en')?stored:'es');document.documentElement.setAttribute('lang',lang);if(!urlLang){var u=new URL(window.location.href);u.searchParams.set('lang',lang);window.history.replaceState({},'',u.toString());}}catch(e){}})();</script>
-  <!-- fin bootstrap idioma -->
+  <!-- Sitio en Español únicamente: se elimina lógica de cambio de idioma -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
   
@@ -16,8 +14,7 @@
   <title data-lang-key="titleContact">Contacto | SR Global Experiences</title>
   <meta name="description" data-lang-key="metaContact" content="Contacta a SR Global Experiences: correo, teléfono y formulario de contacto.">
   <link rel="canonical" href="https://srglobalexperiences.com/contact.html" />
-  <link rel="alternate" hreflang="es" href="https://srglobalexperiences.com/contact.html" />
-  <link rel="alternate" hreflang="en" href="https://srglobalexperiences.com/contact.html?lang=en" />
+  
   <link rel="icon" href="https://i.imgur.com/H57d5sD.png" />
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -119,11 +116,7 @@
           </div>
           <div class="flex items-center ml-6">
             <a href="#form" class="bg-brand-orange text-white font-bold py-2 px-5 rounded-lg hover:bg-opacity-90 transition-all hover:scale-105" data-lang-key="navContactBtn">Contactar</a>
-            <div class="ml-4 flex items-center space-x-2 text-sm font-bold text-gray-600">
-              <a href="#" class="cursor-pointer hover:text-brand-orange" onclick="switchLanguage('es')">ES</a>
-              <span class="text-gray-300">|</span>
-              <a href="#" class="cursor-pointer hover:text-brand-orange" onclick="switchLanguage('en')">EN</a>
-            </div>
+            
             <button id="menu-toggle" class="ml-4 text-gray-700 md:hidden focus:outline-none">
               <i class="fas fa-bars text-2xl"></i>
             </button>
@@ -316,18 +309,7 @@
 
   <!-- Burbuja flotante WhatsApp eliminada -->
 
-  <script>(function(){function i(src,cb){var s=document.createElement('script');s.src=src;s.defer=true;s.onload=cb;s.onerror=cb;document.body.appendChild(s);}function ensure(){if(typeof window.switchLanguage!=="function"){i('script.js?v=1');}}i('script.min.js?v=1',function(){setTimeout(ensure,0);});})();</script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function(){
-      try {
-        const params = new URLSearchParams(window.location.search);
-        const lang = params.get('lang');
-        if (lang && (lang === 'es' || lang === 'en')) {
-          if (typeof switchLanguage === 'function') switchLanguage(lang);
-        }
-      } catch {}
-    });
-  </script>
+  <script>(function(){function i(src,cb){var s=document.createElement('script');s.src=src;s.defer=true;s.onload=cb;s.onerror=cb;document.body.appendChild(s);}function ensure(){if(typeof window.safeStartApp!=="function"){i('script.js?v=1');}}i('script.min.js?v=2',function(){setTimeout(ensure,0);});})();</script>
 
   <!-- Landbot Chat Widget -->
   <script>

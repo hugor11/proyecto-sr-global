@@ -6,7 +6,8 @@
     
     <!-- Meta tags específicos para iOS/Safari -->
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" co        <!-- Landbot Chat Widget - Optimizado para iOS -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+        <!-- Landbot Chat Widget - Optimizado para iOS -->
         <script>
 // Inicialización mejorada de Landbot con mejor soporte para iOS
 var myLandbot;
@@ -63,36 +64,16 @@ setTimeout(function() {
     <meta name="apple-mobile-web-app-title" content="SR Global">
     <meta name="format-detection" content="telephone=no">
     
-    <!-- Bootstrap temprano del idioma antes de que carguen otros scripts -->
-    <script>
-        (function(){
-            try {
-                var params = new URLSearchParams(window.location.search);
-                var urlLang = params.get('lang');
-                var stored = localStorage.getItem('preferredLanguage');
-                var lang = (urlLang==='es'||urlLang==='en') ? urlLang : ((stored==='es'||stored==='en') ? stored : 'es');
-                // Fijar lang en <html> inmediatamente para evitar parpadeos
-                document.documentElement.setAttribute('lang', lang);
-                // Si no hay ?lang= en la URL y tenemos preferencia, inyectarlo para navegación consistente
-                if(!urlLang){
-                    var u = new URL(window.location.href);
-                    u.searchParams.set('lang', lang);
-                    window.history.replaceState({},'',u.toString());
-                }
-            } catch(e) { /* silencioso */ }
-        })();
-    </script>
+    <!-- Sitio en Español únicamente: se elimina lógica de cambio de idioma -->
     <title data-lang-key="pageTitle">SR Global Experiences - Diseñamos Tu Viaje Perfecto</title>
     
     <!-- Metadatos para SEO -->
     <meta name="description" data-lang-key="metaDescription" content="Descubre tours y experiencias únicas en Riviera Maya y el mundo. Agencia de viajes human-first, itinerarios a medida y soporte 24/7. Cotiza hoy.">
     <meta name="keywords" content="Riviera Maya, tours, viajes, Cancún, Tulum, Playa del Carmen, Cozumel, Chichen Itzá, eventos corporativos, MICE">
 
-    <!-- Canonical + hreflang -->
+    <!-- Canonical -->
     <link rel="canonical" href="https://srglobalexperiences.com/">
-    <link rel="alternate" hreflang="es" href="https://srglobalexperiences.com/?lang=es">
-    <link rel="alternate" hreflang="en" href="https://srglobalexperiences.com/?lang=en">
-    <link rel="alternate" hreflang="x-default" href="https://srglobalexperiences.com/">
+    
 
     <!-- Open Graph / Twitter -->
     <meta property="og:site_name" content="SR Global Experiences">
@@ -104,7 +85,7 @@ setTimeout(function() {
     <meta property="og:image:secure_url" content="https://mayanmonkey.com/blog/es/wp-content/uploads/sites/2/2023/02/shutterstock_2133566785-compressed.jpg">
     <meta property="og:image:alt" content="SR Global Experiences — Tours y viajes en Riviera Maya">
     <meta property="og:locale" content="es_MX">
-    <meta property="og:locale:alternate" content="en_US">
+    
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="SR Global Experiences - Diseñamos Tu Viaje Perfecto">
     <meta name="twitter:description" content="Tours y experiencias personalizadas en Riviera Maya y el mundo. Atención 24/7 y servicio human-first.">
@@ -196,11 +177,7 @@ setTimeout(function() {
                         <a href="contact.html" class="bg-brand-orange text-white font-bold py-2 px-5 rounded-lg hover:bg-opacity-90 transition-all hover:scale-105" data-lang-key="navContactBtn">
                             Contactar
                         </a>
-                        <div class="ml-4 flex items-center space-x-2 text-sm font-bold text-gray-600">
-                            <a href="#" class="cursor-pointer hover:text-brand-orange" onclick="switchLanguage('es')">ES</a>
-                            <span class="text-gray-300">|</span>
-                            <a href="#" class="cursor-pointer hover:text-brand-orange" onclick="switchLanguage('en')">EN</a>
-                        </div>
+                        
                         <!-- Botón de menú móvil -->
                         <button id="menu-toggle" class="ml-4 text-gray-700 md:hidden focus:outline-none">
                             <i class="fas fa-bars text-2xl"></i>
@@ -389,7 +366,7 @@ setTimeout(function() {
                         s.src=src; s.defer=true; s.onload=done; s.onerror=done; document.body.appendChild(s);
                     }
                     function ensure(){
-                        if (typeof window.switchLanguage!=="function"){
+                        if (typeof window.safeStartApp!=="function"){
                             inject('script.js?v=1');
                         }
                     }
@@ -399,41 +376,6 @@ setTimeout(function() {
             </script>
     
     
-
-    <!-- Script: aplicar idioma desde ?lang=es|en al cargar -->
-    <script>
-        // Script de inicialización mejorado para iOS
-        function initializeApp() {
-            try {
-                const params = new URLSearchParams(window.location.search);
-                const lang = params.get('lang');
-                if (lang && (lang === 'es' || lang === 'en')) {
-                    if (typeof switchLanguage === 'function') {
-                        switchLanguage(lang);
-                    } else {
-                        // Reintentar después de que los scripts se carguen
-                        setTimeout(function() {
-                            if (typeof switchLanguage === 'function') {
-                                switchLanguage(lang);
-                            }
-                        }, 500);
-                    }
-                }
-            } catch (e) {
-                console.warn('Error initializing language:', e);
-            }
-        }
-
-        // Múltiples puntos de entrada para mayor compatibilidad
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initializeApp);
-        } else {
-            initializeApp();
-        }
-        
-        // Fallback adicional
-        window.addEventListener('load', initializeApp);
-    </script>
 
         <!-- Landbot Chat Widget -->
         <script>
