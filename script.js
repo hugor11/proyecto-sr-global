@@ -1156,7 +1156,8 @@ function initMobileMenu() {
 
     // Toggle del menú
     function toggleMenu(e) {
-        if (e) {
+        // Solo prevenir default si es el botón toggle, no los enlaces
+        if (e && e.currentTarget === newMenuToggle) {
             e.preventDefault();
             e.stopPropagation();
         }
@@ -1173,9 +1174,15 @@ function initMobileMenu() {
     menuToggle.parentNode.replaceChild(newMenuToggle, menuToggle);
     
     // Agregar múltiples tipos de eventos para máxima compatibilidad
-    newMenuToggle.addEventListener('click', toggleMenu, { passive: false });
+    newMenuToggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        toggleMenu(e);
+    }, { passive: false });
+    
     newMenuToggle.addEventListener('touchend', function(e) {
         e.preventDefault();
+        e.stopPropagation();
         toggleMenu(e);
     }, { passive: false });
 
@@ -1198,13 +1205,30 @@ function initMobileMenu() {
     // Cerrar menú al hacer clic en un enlace
     const menuLinks = mobileMenu.querySelectorAll('a');
     menuLinks.forEach(link => {
-        link.addEventListener('click', function() {
-            // Pequeño delay para que se vea la transición
-            setTimeout(closeMenu, 100);
+        // Click event - NO usar preventDefault para permitir navegación
+        link.addEventListener('click', function(e) {
+            // NO prevenir default - dejar que el navegador maneje el enlace
+            // Solo cerrar el menú DESPUÉS de un pequeño delay
+            console.log('Menu link clicked:', this.href);
+            
+            // Cerrar el menú inmediatamente para mejor UX
+            closeMenu();
         }, { passive: true });
-        // También para touch events
-        link.addEventListener('touchend', function() {
-            setTimeout(closeMenu, 100);
+        
+        // Touch event para iOS - manejo especial
+        link.addEventListener('touchstart', function(e) {
+            // Añadir clase para feedback visual
+            this.style.backgroundColor = '#f3f4f6';
+        }, { passive: true });
+        
+        link.addEventListener('touchend', function(e) {
+            // Quitar feedback visual
+            this.style.backgroundColor = '';
+            
+            // NO prevenir default - dejar que el navegador maneje el enlace
+            // Cerrar menú inmediatamente
+            console.log('Menu link touched:', this.href);
+            closeMenu();
         }, { passive: true });
     });
 
