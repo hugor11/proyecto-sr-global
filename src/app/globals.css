@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+:root {
+  --brand-orange: #ff6b35;
+  --brand-dark: #0d1b2a;
+  --brand-light: #f0f4f8;
+}
+
+body {
+  background: white;
+  color: rgb(17 24 39);
+  font-family: var(--font-poppins), system-ui, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+}
+
+.text-brand-orange {
+  color: var(--brand-orange);
+}
+
+.bg-brand-orange {
+  background-color: var(--brand-orange);
+}
+
+.text-brand-dark {
+  color: var(--brand-dark);
+}
+
+.bg-brand-dark {
+  background-color: var(--brand-dark);
+}
+
+/* Overlay for mobile menu */
+.menu-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 40;
+  display: none;
+}
+
+.menu-overlay.active {
+  display: block;
+}

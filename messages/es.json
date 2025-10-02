@@ -1,0 +1,28 @@
+{
+  "nav": {
+    "home": "Inicio",
+    "promotions": "Promociones",
+    "experiences": "Experiencias",
+    "romance": "Romance",
+    "destinations": "Destinos",
+    "groups": "Grupos y Convenciones",
+    "about": "Nosotros",
+    "contact": "Contactar"
+  },
+  "meta": {
+    "title": "SR Global Experiences - Diseñamos Tu Viaje Perfecto",
+    "description": "Descubre tours y experiencias únicas en Riviera Maya y el mundo. Agencia de viajes human-first, itinerarios a medida y soporte 24/7. Cotiza hoy."
+  },
+  "hero": {
+    "title": "Diseñamos Tu Viaje Perfecto",
+    "subtitle": "Experiencias inolvidables en Riviera Maya y el mundo",
+    "cta": "Explorar Destinos"
+  },
+  "footer": {
+    "description": "Creamos experiencias de viaje únicas y personalizadas para cada cliente.",
+    "quickLinks": "Enlaces Rápidos",
+    "contact": "Contacto",
+    "followUs": "Síguenos",
+    "rights": "Todos los derechos reservados."
+  }
+}
