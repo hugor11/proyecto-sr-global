@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+.bin/
+@jridgewell/
+acorn/
+buffer-from/
+commander/
+source-map/
+source-map-support/
+terser/
+
+# Build outputs
+.next/
+out/
+dist/
+*.min.js
+*.min.css
+
+# Package locks
+.package-lock.json
+package-lock.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment
+.env
+.env.local
+.env.production
+
+# Carpetas de proyectos anidados
+sr-global-nextjs/
+sr-global-original/
+
+# Temporal
+*.tmp
+*.temp

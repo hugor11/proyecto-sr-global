@@ -2,7 +2,7 @@
 
 [build]
   publish = "."
-  command = "npm install --no-audit --no-fund && npm run build"
+  command = "echo 'Skipping build - using prebuilt files'"
 
 [build.environment]
   NODE_VERSION = "20"
