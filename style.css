@@ -174,6 +174,38 @@ body {
   position: relative;
 }
 
+/* CRÍTICO: Fix específico para página de inicio - el nav debe estar sobre hero */
+#navbar {
+  /* Asegurar que el navbar esté SIEMPRE por encima del contenido de la página */
+  z-index: 9999 !important;
+  position: sticky !important;
+}
+
+/* Fix para iOS: evitar que hero content interfiera con header clicks */
+#page-home header,
+#page-home .page-content {
+  /* Prevenir que el hero "tape" el navbar */
+  position: relative;
+  z-index: 1;
+  /* Asegurar que elementos del hero no interfieran con clicks del navbar */
+  pointer-events: auto;
+}
+
+/* Asegurar que los botones del navbar sean clicables incluso en iOS */
+#navbar button,
+#navbar a,
+#menu-toggle {
+  position: relative;
+  z-index: 10000;
+  /* Touch target mínimo para iOS */
+  min-width: 44px;
+  min-height: 44px;
+  /* Asegurar que sean clicables */
+  pointer-events: auto !important;
+  /* Mejorar el área de touch en iOS */
+  -webkit-tap-highlight-color: rgba(0,0,0,0.1);
+}
+
 /* Overlay oscuro cuando el menú está abierto */
 .menu-overlay {
   position: fixed;

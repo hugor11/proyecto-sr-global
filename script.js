@@ -125,6 +125,26 @@ window.addEventListener('load', function() {
     }
 }, { once: true });
 
+// CRÍTICO: Manejar bfcache de iOS - el menú móvil no se inicializa en pageshow
+window.addEventListener('pageshow', function(event) {
+    console.log('pageshow event fired, persisted:', event.persisted);
+    
+    // Si la página viene de bfcache (navegación back/forward en iOS)
+    if (event.persisted) {
+        console.log('Page restored from bfcache, reinitializing mobile menu');
+        // Forzar reinicialización del menú móvil
+        window.__appStarted = false;
+        setTimeout(function() {
+            safeStartApp();
+        }, 100);
+    } else {
+        // Primera carga o reload completo
+        if (!window.__appStarted) {
+            setTimeout(safeStartApp, 100);
+        }
+    }
+});
+
 // Fallback final: forzar inicio después de 3 segundos si nada más funcionó
 setTimeout(function() {
     if (!window.__appStarted) {
@@ -425,6 +445,13 @@ function initMobileMenu() {
 
     console.log('Initializing mobile menu (refactored version)');
     
+    // DEBUGGING: Log específico para iOS
+    console.log('Menu toggle element:', menuToggle);
+    console.log('Menu toggle computed style:', window.getComputedStyle(menuToggle));
+    console.log('Menu toggle z-index:', window.getComputedStyle(menuToggle).zIndex);
+    console.log('User agent:', navigator.userAgent);
+    console.log('Is likely iOS:', /iPad|iPhone|iPod/.test(navigator.userAgent));
+    
     // Estado del menú - simplificado
     let isOpen = false;
 
@@ -450,16 +477,35 @@ function initMobileMenu() {
         console.log('Menu closed');
     }
 
-    // 1. Toggle del menú - SIMPLE: Solo evento CLICK (iOS convierte touch a click automáticamente)
+    // 1. Toggle del menú - MEJORADO para iOS: Click + touchstart como fallback
     // NO más preventDefault ni stopPropagation - dejar comportamiento nativo
-    menuToggle.addEventListener('click', function() {
+    function handleMenuToggle(e) {
+        console.log('Menu toggle triggered by:', e.type, 'on', navigator.userAgent.includes('iPhone') ? 'iOS' : 'other');
+        
         if (isOpen) {
             closeMenu();
         } else {
             openMenu();
         }
         console.log('Menu toggled, isOpen:', isOpen);
-    });
+    }
+    
+    // Agregar event listeners múltiples para iOS
+    menuToggle.addEventListener('click', handleMenuToggle);
+    
+    // Fallback específico para iOS - touchstart si click no funciona
+    if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+        console.log('iOS detected, adding touchstart fallback');
+        menuToggle.addEventListener('touchstart', function(e) {
+            // Solo si no se disparó ya el click
+            setTimeout(function() {
+                if (!e.defaultPrevented) {
+                    console.log('touchstart fallback triggered');
+                    handleMenuToggle(e);
+                }
+            }, 50);
+        }, { passive: true });
+    }
 
     // 2. Cerrar menú al hacer click fuera del menú
     document.addEventListener('click', function(e) {
@@ -513,6 +559,22 @@ function initMobileMenu() {
     menuToggle.setAttribute('aria-expanded', 'false');
     menuToggle.setAttribute('aria-controls', 'mobile-menu');
     menuToggle.setAttribute('aria-label', 'Abrir menú');
+    
+    // 7. Verificación post-inicialización específica para iOS
+    setTimeout(function() {
+        console.log('Post-init verification:');
+        console.log('Menu toggle clickable?', !menuToggle.style.pointerEvents || menuToggle.style.pointerEvents !== 'none');
+        console.log('Menu toggle visible?', window.getComputedStyle(menuToggle).display !== 'none');
+        console.log('Menu toggle z-index:', window.getComputedStyle(menuToggle).zIndex);
+        
+        // Forzar estilos críticos si es iOS
+        if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+            menuToggle.style.pointerEvents = 'auto';
+            menuToggle.style.zIndex = '10001';
+            menuToggle.style.position = 'relative';
+            console.log('iOS critical styles forced on menu toggle');
+        }
+    }, 500);
 
     console.log('Mobile menu initialized successfully (refactored)');
 }
