@@ -1,0 +1,73 @@
+/* CSS crítico para el menú móvil - z-index y pointer-events */
+
+/* Overlay del menú */
+[data-menu-overlay] {
+  z-index: 40 !important;
+  pointer-events: auto;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Panel del menú móvil */
+[data-menu-panel] {
+  z-index: 50 !important; /* MAYOR que el overlay */
+  pointer-events: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Enlaces dentro del panel */
+[data-menu-panel] a {
+  pointer-events: auto !important;
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Botón de cerrar */
+[data-menu-close] {
+  pointer-events: auto !important;
+  cursor: pointer;
+  z-index: 10 !important;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Botón hamburguesa */
+[data-menu-toggle] {
+  pointer-events: auto !important;
+  cursor: pointer;
+  z-index: 60 !important; /* Más alto que todo */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Prevenir scroll del body cuando el menú está abierto */
+body.overflow-hidden {
+  overflow: hidden !important;
+  position: fixed !important;
+  width: 100% !important;
+}
+
+/* Touch improvements para iOS */
+body.touch-none {
+  touch-action: none !important;
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+}
+
+/* Animaciones suaves */
+[data-menu-panel] {
+  transition: transform 0.3s ease-in-out;
+}
+
+[data-menu-overlay] {
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* Estados ocultos */
+[data-menu-panel][hidden] {
+  transform: translateX(100%);
+}
+
+[data-menu-overlay].hidden {
+  opacity: 0;
+  pointer-events: none;
+}

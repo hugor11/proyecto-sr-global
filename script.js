@@ -105,41 +105,50 @@ function setVH() {
   }
   
   function initMenu() {
-    // Abortar listeners previos para evitar duplicados
+    // Abortar listeners previos
     if (menuController) {
       menuController.abort();
     }
     menuController = new AbortController();
     const { signal } = menuController;
     
-    // 🔧 LIMPIEZA: eliminar botones de cerrar duplicados al inicializar
+    console.log('✅ Inicializando menú móvil...');
+    
+    // 🧹 Limpieza de duplicados
     const panel = document.querySelector('[data-menu-panel]');
     if (panel) {
       const closeBtns = panel.querySelectorAll('[data-menu-close]');
       if (closeBtns.length > 1) {
-        console.warn(`⚠️ Se encontraron ${closeBtns.length} botones de cerrar, eliminando duplicados`);
+        console.warn(`⚠️ ${closeBtns.length} botones de cerrar, eliminando duplicados`);
         closeBtns.forEach((btn, i) => {
-          if (i > 0) {
-            console.log('🗑️ Eliminando botón duplicado', i + 1);
-            btn.remove();
-          }
+          if (i > 0) btn.remove();
         });
       }
     }
     
-    // Listener principal: botón hamburguesa, X y overlay
+    // 🎯 Listener principal
     document.addEventListener('click', (e) => {
-      // ORDEN CRÍTICO: verificar panel PRIMERO
-      const clickedPanel = e.target.closest('[data-menu-panel]');
-      
-      // Si el clic fue dentro del panel (pero NO en el botón X), salir temprano
-      if (clickedPanel && !e.target.closest('[data-menu-close]')) {
-        console.log('🔵 Clic dentro del panel (no en X), ignorando');
-        return; // Dejar que el clic siga su flujo normal (enlaces, etc.)
+      // ORDEN CRÍTICO: verificar enlaces PRIMERO
+      const link = e.target.closest('[data-menu-panel] a[href]');
+      if (link) {
+        console.log('🔗 Navegando a:', link.href);
+        // NO hacer preventDefault - dejar que navegue
+        // Cerrar menú DESPUÉS de un micro-delay
+        setTimeout(() => setMenuState(false), 100);
+        return; // SALIR - no procesar nada más
       }
       
-      const btn = e.target.closest('[data-menu-toggle]');
+      // Luego verificar si el clic fue dentro del panel (pero no en X)
+      const clickedPanel = e.target.closest('[data-menu-panel]');
       const closeBtn = e.target.closest('[data-menu-close]');
+      
+      if (clickedPanel && !closeBtn) {
+        console.log('🔵 Clic dentro del panel, ignorando');
+        return; // SALIR
+      }
+      
+      // Ahora sí, procesar botones de control
+      const btn = e.target.closest('[data-menu-toggle]');
       const overlay = e.target.closest('[data-menu-overlay]');
       
       if (btn) {
@@ -158,22 +167,12 @@ function setVH() {
       else if (overlay) {
         e.preventDefault();
         e.stopPropagation();
-        console.log('🔴 Cerrando por overlay (clic en fondo oscuro)');
+        console.log('🔴 Cerrando por overlay (fondo oscuro)');
         setMenuState(false);
       }
     }, { capture: true, signal });
     
-    // Listener SEPARADO para enlaces (para logging, el cierre es automático)
-    document.addEventListener('click', (e) => {
-      const link = e.target.closest('[data-menu-panel] a[href]');
-      if (link) {
-        console.log('🔗 Link clickeado, navegando a:', link.href);
-        // NO hacer e.preventDefault() - dejar que navegue
-        // NO cerrar el menú aquí - la navegación lo hará automáticamente
-      }
-    }, { signal });
-    
-    // Cerrar con Escape
+    // � Cerrar con Escape
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         const btn = document.querySelector('[data-menu-toggle]');
