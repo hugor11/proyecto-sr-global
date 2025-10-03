@@ -332,7 +332,6 @@ setTimeout(function() {
 // SPA navigation removed; site is now multipage
 
 // Instancia global para evitar reinicializaciones innecesarias
-let promotionsSwiper = null;
 
 // Inicializar Swiper para carruseles (si está visible o forzando)
 function initSwiper() {
@@ -405,7 +404,7 @@ function watchCarouselVisibility() {
     const obs = new IntersectionObserver((entries) => {
         entries.forEach((e) => {
             if (e.isIntersecting) {
-                ensurePromotionsSwiper(true);
+                    initPromotionsSwiper();
                 // tras inicializar, no necesitamos seguir observando
                 obs.disconnect();
             }
@@ -610,5 +609,15 @@ function initModals() {
 // - Múltiples eventos touch redundantes
 // - Gestión de overflow: hidden problemática
 // ==============================================================================
-// NOTA: initMobileMenu() removida - reemplazada por attachMenuListeners() profesional
+
+// Guard anti-carga doble y namespace global
+(function(){
+    window.SR = window.SR || {};
+    if (window.SR.__mainLoaded) {
+        console.warn('[SR] main bundle already loaded - skipping duplicate execution');
+        return;
+    }
+    window.SR.__mainLoaded = true;
+    // ...resto del código robusto de menú y Swiper...
+})();
 
