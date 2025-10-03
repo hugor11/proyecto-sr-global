@@ -24,21 +24,23 @@
                                   Element.prototype.msMatchesSelector;
     }
     
-    // 3. Fix para viewport height en iOS (problema del 100vh)
-    function setVHProperty() {
+    // 3. CRÍTICO: Fix para viewport height en iOS (problema del 100vh) - versión profesional
+    function setVH() {
         try {
             const vh = window.innerHeight * 0.01;
             document.documentElement.style.setProperty('--vh', `${vh}px`);
+            console.log('VH updated:', vh, 'px');
         } catch (e) {
             console.warn('Error setting VH property:', e);
         }
     }
     
-    // 4. Configurar VH al cargar y al cambiar orientación
-    setVHProperty();
-    window.addEventListener('resize', setVHProperty, { passive: true });
+    // 4. Configurar VH al cargar y al cambiar orientación - mejorado para iOS
+    setVH();
+    window.addEventListener('resize', setVH, { passive: true });
     window.addEventListener('orientationchange', function() {
-        setTimeout(setVHProperty, 200);
+        // Delay para iOS orientation change
+        setTimeout(setVH, 100);
     }, { passive: true });
     
     // 5. Fix para eventos touch en iOS
@@ -49,10 +51,35 @@
     // 6. [REMOVIDO] gesturestart preventDefault - causaba conflictos con navegación
     // NO prevenir gestures - dejar comportamiento nativo del navegador
     
-    // 7. Fix para scroll momentum en iOS
+    // 7. Fix para scroll momentum en iOS + diagnóstico visual
     if (window.navigator.userAgent.match(/(iPad|iPhone|iPod)/g)) {
         document.documentElement.style.webkitOverflowScrolling = 'touch';
     }
+    
+    // 8. Diagnóstico visual para debugging (solo en desarrollo)
+    window.debugMenuPosition = function() {
+        const btn = document.querySelector('#menu-toggle');
+        if (!btn) return console.error('Menu toggle not found');
+        
+        const r = btn.getBoundingClientRect();
+        const x = r.left + r.width / 2, y = r.top + r.height / 2;
+        const el = document.elementFromPoint(x, y);
+        
+        console.log('=== DIAGNÓSTICO MENÚ ===');
+        console.log('Botón:', btn);
+        console.log('Rectángulo:', r);
+        console.log('Centro del botón:', {x, y});
+        console.log('Elemento superior:', el);
+        console.log('¿Es el botón?', el === btn);
+        console.log('Z-index del botón:', getComputedStyle(btn).zIndex);
+        console.log('Z-index del elemento superior:', el ? getComputedStyle(el).zIndex : 'N/A');
+        
+        if (el !== btn) {
+            console.warn('⚠️ PROBLEMA: Hay algo tapando el botón del menú');
+            console.log('Elemento que tapa:', el);
+            console.log('Clases del elemento:', el?.className);
+        }
+    };
     
     console.log('iOS/Safari polyfills and fixes loaded');
 })();
@@ -109,23 +136,32 @@ function safeStartApp() {
     }
 }
 
-// Múltiples estrategias de inicialización para máxima compatibilidad
+// Múltiples estrategias de inicialización para máxima compatibilidad iOS
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', safeStartApp, { once: true });
+    document.addEventListener('DOMContentLoaded', function() {
+        setVH(); 
+        initMobileMenu();
+    }, { once: true });
 } else {
     // DOM ya listo - usar setTimeout para asegurar que todo se haya renderizado
-    setTimeout(safeStartApp, 0);
+    setTimeout(function() {
+        setVH();
+        initMobileMenu();
+    }, 0);
 }
 
 // Fallback adicional para iOS: también escuchar el evento load
 window.addEventListener('load', function() {
     // Solo ejecutar si no se había iniciado antes
-    if (!window.__appStarted) {
-        setTimeout(safeStartApp, 200);
+    if (!menuInitDone) {
+        setTimeout(function() {
+            setVH();
+            initMobileMenu();
+        }, 200);
     }
 }, { once: true });
 
-// CRÍTICO: Manejar bfcache de iOS - el menú móvil no se inicializa en pageshow
+// CRÍTICO: Manejar bfcache de iOS Safari - el menú móvil no se inicializa en pageshow
 window.addEventListener('pageshow', function(event) {
     console.log('pageshow event fired, persisted:', event.persisted);
     
@@ -133,23 +169,34 @@ window.addEventListener('pageshow', function(event) {
     if (event.persisted) {
         console.log('Page restored from bfcache, reinitializing mobile menu');
         // Forzar reinicialización del menú móvil
-        window.__appStarted = false;
         setTimeout(function() {
-            safeStartApp();
+            setVH();
+            initMobileMenu(true); // force = true
+            
+            // Aplicar hotfix de overlays después del bfcache
+            document.querySelectorAll('.overlay, .hero::before, .banner-overlay').forEach(el => {
+                const cs = getComputedStyle(el);
+                if (cs.opacity === '0' || cs.visibility === 'hidden')
+                    el.style.pointerEvents = 'none';
+            });
         }, 100);
     } else {
         // Primera carga o reload completo
-        if (!window.__appStarted) {
-            setTimeout(safeStartApp, 100);
+        if (!menuInitDone) {
+            setTimeout(function() {
+                setVH();
+                initMobileMenu();
+            }, 100);
         }
     }
 });
 
 // Fallback final: forzar inicio después de 3 segundos si nada más funcionó
 setTimeout(function() {
-    if (!window.__appStarted) {
+    if (!menuInitDone) {
         console.warn('Forcing app start after timeout');
-        safeStartApp();
+        setVH();
+        initMobileMenu(true);
     }
 }, 3000);
 
@@ -434,133 +481,139 @@ function initModals() {
 // - Múltiples eventos touch redundantes
 // - Gestión de overflow: hidden problemática
 // ==============================================================================
-function initMobileMenu() {
-    const menuToggle = document.getElementById('menu-toggle');
-    const mobileMenu = document.getElementById('mobile-menu');
+// CRÍTICO: Inicialización profesional del menú móvil para iOS
+let menuInitDone = false;
+
+function initMobileMenu(force = false) {
+    if (menuInitDone && !force) return;
+    
+    const menuToggle = document.querySelector('#menu-toggle');
+    const mobileMenu = document.querySelector('#mobile-menu');
     
     if (!menuToggle || !mobileMenu) {
         console.warn('Mobile menu elements not found');
         return;
     }
 
-    console.log('Initializing mobile menu (refactored version)');
+    console.log('Initializing mobile menu (iOS professional version)');
     
     // DEBUGGING: Log específico para iOS
     console.log('Menu toggle element:', menuToggle);
-    console.log('Menu toggle computed style:', window.getComputedStyle(menuToggle));
     console.log('Menu toggle z-index:', window.getComputedStyle(menuToggle).zIndex);
     console.log('User agent:', navigator.userAgent);
-    console.log('Is likely iOS:', /iPad|iPhone|iPod/.test(navigator.userAgent));
+    console.log('Is iOS device:', /iPad|iPhone|iPod/.test(navigator.userAgent));
     
-    // Estado del menú - simplificado
+    // Hotfix: Aplicar pointer-events: none a overlays problemáticos
+    document.querySelectorAll('.hero, .overlay, .banner, .slider, [class*="hero"], [class*="overlay"]')
+        .forEach(el => {
+            const cs = getComputedStyle(el);
+            if (cs.opacity === '0' || cs.visibility === 'hidden' || el.classList.contains('hero')) {
+                el.style.pointerEvents = 'none';
+            }
+        });
+    
+    // Estado del menú
     let isOpen = false;
 
-    // Función para abrir el menú - simplificada
-    function openMenu() {
-        isOpen = true;
-        mobileMenu.classList.remove('hidden');
-        mobileMenu.style.display = 'block';
-        menuToggle.querySelector('i').className = 'fas fa-times text-2xl';
-        menuToggle.setAttribute('aria-expanded', 'true');
-        menuToggle.setAttribute('aria-label', 'Cerrar menú');
-        console.log('Menu opened');
-    }
-
-    // Función para cerrar el menú - simplificada
-    function closeMenu() {
-        isOpen = false;
-        mobileMenu.classList.add('hidden');
-        mobileMenu.style.display = 'none';
-        menuToggle.querySelector('i').className = 'fas fa-bars text-2xl';
-        menuToggle.setAttribute('aria-expanded', 'false');
-        menuToggle.setAttribute('aria-label', 'Abrir menú');
-        console.log('Menu closed');
-    }
-
-    // 1. Toggle del menú - MEJORADO para iOS: Click + touchstart como fallback
-    // NO más preventDefault ni stopPropagation - dejar comportamiento nativo
-    function handleMenuToggle(e) {
-        console.log('Menu toggle triggered by:', e.type, 'on', navigator.userAgent.includes('iPhone') ? 'iOS' : 'other');
+    // Función para toggle con manejo robusto
+    const toggle = (e) => {
+        e?.preventDefault?.();
+        e?.stopPropagation?.();
         
-        if (isOpen) {
-            closeMenu();
+        const expanded = menuToggle.getAttribute('aria-expanded') === 'true';
+        const newState = !expanded;
+        
+        console.log('Menu toggle triggered, new state:', newState);
+        
+        // Actualizar estado
+        isOpen = newState;
+        menuToggle.setAttribute('aria-expanded', String(newState));
+        
+        if (newState) {
+            // Abrir menú
+            mobileMenu.classList.remove('hidden');
+            mobileMenu.style.display = 'block';
+            menuToggle.querySelector('i').className = 'fas fa-times text-2xl';
+            menuToggle.setAttribute('aria-label', 'Cerrar menú');
+            document.body.classList.add('no-scroll');
+            console.log('Menu opened');
         } else {
-            openMenu();
+            // Cerrar menú
+            mobileMenu.classList.add('hidden');
+            mobileMenu.style.display = 'none';
+            menuToggle.querySelector('i').className = 'fas fa-bars text-2xl';
+            menuToggle.setAttribute('aria-label', 'Abrir menú');
+            document.body.classList.remove('no-scroll');
+            console.log('Menu closed');
         }
-        console.log('Menu toggled, isOpen:', isOpen);
-    }
+    };
     
-    // Agregar event listeners múltiples para iOS
-    menuToggle.addEventListener('click', handleMenuToggle);
-    
-    // Fallback específico para iOS - touchstart si click no funciona
-    if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
-        console.log('iOS detected, adding touchstart fallback');
-        menuToggle.addEventListener('touchstart', function(e) {
-            // Solo si no se disparó ya el click
-            setTimeout(function() {
-                if (!e.defaultPrevented) {
-                    console.log('touchstart fallback triggered');
-                    handleMenuToggle(e);
-                }
-            }, 50);
-        }, { passive: true });
+    // Limpiar eventos anteriores
+    if (menuToggle._bound) {
+        menuToggle._bound.forEach(fn => menuToggle.removeEventListener('pointerup', fn));
     }
+    menuToggle._bound = [toggle];
+    
+    // Usar pointerup en lugar de click para mejor compatibilidad iOS
+    menuToggle.addEventListener('pointerup', toggle);
+    
+    // Manejar teclado
+    menuToggle.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            toggle(e);
+        }
+    });
 
-    // 2. Cerrar menú al hacer click fuera del menú
-    document.addEventListener('click', function(e) {
-        // Solo si el menú está abierto
+    // Cerrar menú al hacer click fuera
+    document.addEventListener('pointerup', function(e) {
         if (!isOpen) return;
         
-        // Verificar si el click fue fuera del menú Y fuera del toggle
         const clickedInsideMenu = mobileMenu.contains(e.target);
         const clickedOnToggle = menuToggle.contains(e.target);
         
         if (!clickedInsideMenu && !clickedOnToggle) {
-            closeMenu();
+            toggle();
             console.log('Menu closed (clicked outside)');
         }
     });
 
-    // 3. Cerrar menú al hacer click en cualquier enlace - SIMPLE: Solo click, sin touch events
+    // Cerrar menú al hacer click en enlaces
     const menuLinks = mobileMenu.querySelectorAll('a');
     menuLinks.forEach(link => {
-        link.addEventListener('click', function() {
-            // NO preventDefault - permitir navegación natural del navegador
+        link.addEventListener('pointerup', function() {
             console.log('Menu link clicked, navigating to:', this.href);
-            
-            // Cerrar menú ANTES de que navegue (el navegador navegará después)
-            closeMenu();
+            toggle(); // Cerrar menú antes de navegar
         });
     });
 
-    // 4. Cerrar menú con tecla ESC
+    // Cerrar menú con tecla ESC
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape' && isOpen) {
-            closeMenu();
+            toggle();
             console.log('Menu closed (ESC key)');
         }
     });
 
-    // 5. Manejar cambios de tamaño de pantalla (cerrar menú en desktop)
+    // Manejar cambios de tamaño de pantalla
     let resizeTimeout;
     window.addEventListener('resize', function() {
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(function() {
-            if (window.innerWidth >= 768 && isOpen) { // md breakpoint de Tailwind
-                closeMenu();
+            if (window.innerWidth >= 768 && isOpen) {
+                toggle();
                 console.log('Menu closed (window resized to desktop)');
             }
         }, 100);
     });
     
-    // 6. Atributos de accesibilidad iniciales
+    // Atributos de accesibilidad iniciales
     menuToggle.setAttribute('role', 'button');
     menuToggle.setAttribute('aria-expanded', 'false');
     menuToggle.setAttribute('aria-controls', 'mobile-menu');
     menuToggle.setAttribute('aria-label', 'Abrir menú');
     
-    // 7. Verificación post-inicialización específica para iOS
+    // Verificación post-inicialización específica para iOS
     setTimeout(function() {
         console.log('Post-init verification:');
         console.log('Menu toggle clickable?', !menuToggle.style.pointerEvents || menuToggle.style.pointerEvents !== 'none');
@@ -574,7 +627,13 @@ function initMobileMenu() {
             menuToggle.style.position = 'relative';
             console.log('iOS critical styles forced on menu toggle');
         }
+        
+        // Ejecutar diagnóstico si está disponible
+        if (window.debugMenuPosition) {
+            window.debugMenuPosition();
+        }
     }, 500);
 
-    console.log('Mobile menu initialized successfully (refactored)');
+    menuInitDone = true;
+    console.log('Mobile menu initialized successfully (iOS professional version)');
 }

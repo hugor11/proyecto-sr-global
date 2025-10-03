@@ -177,8 +177,12 @@ body {
 /* CRÍTICO: Fix específico para página de inicio - el nav debe estar sobre hero */
 #navbar {
   /* Asegurar que el navbar esté SIEMPRE por encima del contenido de la página */
-  z-index: 9999 !important;
   position: sticky !important;
+  top: 0;
+  z-index: 10000 !important;
+  isolation: isolate;
+  /* Prevent transform contexts from affecting z-index */
+  will-change: auto;
 }
 
 /* Fix para iOS: evitar que hero content interfiera con header clicks */
@@ -196,7 +200,7 @@ body {
 #navbar a,
 #menu-toggle {
   position: relative;
-  z-index: 10000;
+  z-index: 10001;
   /* Touch target mínimo para iOS */
   min-width: 44px;
   min-height: 44px;
@@ -204,6 +208,37 @@ body {
   pointer-events: auto !important;
   /* Mejorar el área de touch en iOS */
   -webkit-tap-highlight-color: rgba(0,0,0,0.1);
+}
+
+/* iOS-specific fixes for home page overlays and hero sections */
+#page-home header::before,
+#page-home .hero::before,
+#page-home .hero > .overlay,
+#page-home .banner-overlay,
+#page-home section:first-of-type::before {
+  pointer-events: none !important;
+}
+
+/* Remove transform contexts that can interfere with z-index stacking */
+#page-home .page-wrapper,
+#page-home header,
+#page-home .hero,
+#page-home .slider,
+#page-home .banner {
+  transform: none !important;
+  filter: none !important;
+  perspective: none !important;
+}
+
+/* iOS viewport height fixes using --vh custom property */
+#page-home header {
+  min-height: calc(var(--vh, 1vh) * 50);
+}
+
+@supports (height: 100dvh) {
+  #page-home header {
+    min-height: 50dvh;
+  }
 }
 
 /* Overlay oscuro cuando el menú está abierto */
