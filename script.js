@@ -223,8 +223,7 @@ function attachMenuListeners() {
         };
         
         // Agregar múltiples event listeners para máxima compatibilidad
-        btn.addEventListener('click', toggleMenu);
-        btn.addEventListener('pointerup', toggleMenu);
+    btn.addEventListener('click', toggleMenu);
         btn.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
@@ -484,7 +483,7 @@ function initGAInteractions() {
     };
 
     // Clics en enlaces relevantes
-            btn.addEventListener('keydown', (e) => {
+    document.addEventListener('click', (ev) => {
         const a = ev.target && ev.target.closest ? ev.target.closest('a') : null;
         if (!a) return;
         const href = (a.getAttribute('href') || '').trim();
