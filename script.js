@@ -484,7 +484,7 @@ function initGAInteractions() {
     };
 
     // Clics en enlaces relevantes
-    document.addEventListener('click', (ev) => {
+            btn.addEventListener('keydown', (e) => {
         const a = ev.target && ev.target.closest ? ev.target.closest('a') : null;
         if (!a) return;
         const href = (a.getAttribute('href') || '').trim();
@@ -618,6 +618,12 @@ function initModals() {
         return;
     }
     window.SR.__mainLoaded = true;
+        // Back-compat: stubs y alias globales para evitar ReferenceError tempranos
+        window.SR.initPromotionsSwiper = window.SR.initPromotionsSwiper || function(){};
+        window.SR.destroyPromotionsSwiper = window.SR.destroyPromotionsSwiper || function(){};
+        // Permite que el código legado que llama initPromotionsSwiper() global no rompa
+        window.initPromotionsSwiper = window.initPromotionsSwiper || function(){ return window.SR.initPromotionsSwiper?.(); };
+        window.destroyPromotionsSwiper = window.destroyPromotionsSwiper || function(){ return window.SR.destroyPromotionsSwiper?.(); };
     // ...resto del código robusto de menú y Swiper...
 })();
 
