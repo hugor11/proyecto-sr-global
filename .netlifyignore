@@ -1,0 +1,19 @@
+# Ignore documentation and backup files
+*.md
+CHECKLIST-*
+AUDITORIA-*
+FIX-*
+REFACTOR-*
+RESUMEN-*
+
+# Ignore development files
+node_modules/
+.git/
+*.log
+.env*
+
+# Ignore test directories
+test*/
+calculadora/
+
+# Focus on production static site files only
