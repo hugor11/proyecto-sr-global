@@ -86,14 +86,30 @@ function setVH() {
     const panel = document.querySelector('[data-menu-panel]') || document.getElementById('mobile-menu');
     const overlay = document.querySelector('[data-menu-overlay]');
     
-    if (!btn || !panel) return;
+    if (!btn || !panel) {
+      console.warn('⚠️ No se encontró botón o panel');
+      return;
+    }
     
+    // Modificar atributos
     btn.setAttribute('aria-expanded', String(isOpen));
     btn.setAttribute('aria-label', isOpen ? 'Cerrar menú' : 'Abrir menú');
-    panel.hidden = !isOpen;
+    
+    // CRÍTICO: quitar/agregar hidden explícitamente
+    if (isOpen) {
+      panel.removeAttribute('hidden');
+    } else {
+      panel.setAttribute('hidden', '');
+    }
+    
+    // Bloqueo de scroll
     document.body.classList.toggle('overflow-hidden', isOpen);
     document.body.classList.toggle('touch-none', isOpen);
-    if (overlay) overlay.classList.toggle('hidden', !isOpen);
+    
+    // Overlay
+    if (overlay) {
+      overlay.classList.toggle('hidden', !isOpen);
+    }
     
     // Cambiar ícono del botón
     const icon = btn.querySelector('i');
