@@ -404,7 +404,7 @@ function watchCarouselVisibility() {
     const obs = new IntersectionObserver((entries) => {
         entries.forEach((e) => {
             if (e.isIntersecting) {
-                    initPromotionsSwiper();
+                ensurePromotionsSwiper(true);
                 // tras inicializar, no necesitamos seguir observando
                 obs.disconnect();
             }
