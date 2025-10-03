@@ -212,6 +212,11 @@ function attachMenuListeners() {
                 btn.querySelector('i').className = 'fas fa-times text-2xl';
                 btn.setAttribute('aria-label', 'Cerrar menú');
                 document.body.classList.add('no-scroll');
+                // Mostrar overlay
+                const overlayEl = document.querySelector('[data-menu-overlay]');
+                if (overlayEl) {
+                    overlayEl.classList.remove('hidden');
+                }
                 console.log('✅ Menú abierto exitosamente');
             } else {
                 mobileMenu.classList.add('hidden');
@@ -219,6 +224,11 @@ function attachMenuListeners() {
                 btn.querySelector('i').className = 'fas fa-bars text-2xl';
                 btn.setAttribute('aria-label', 'Abrir menú');
                 document.body.classList.remove('no-scroll');
+                // Ocultar overlay
+                const overlayEl = document.querySelector('[data-menu-overlay]');
+                if (overlayEl) {
+                    overlayEl.classList.add('hidden');
+                }
                 console.log('✅ Menú cerrado exitosamente');
             }
         };
@@ -239,6 +249,102 @@ function attachMenuListeners() {
         btn.setAttribute('aria-label', 'Abrir menú');
         
         console.log(`✅ Listeners agregados exitosamente al botón ${index + 1}`);
+    });
+
+    // Delegación para cerrar menú: X, overlay, links, y clic fuera
+    document.addEventListener('click', (e) => {
+        const closeBtn = e.target.closest('[data-menu-close]');
+        const overlay = e.target.closest('[data-menu-overlay]');
+        const link = e.target.closest('[data-menu-panel] a[href]');
+        const panel = document.querySelector('[data-menu-panel]');
+        const toggleBtn = document.querySelector('[data-menu-toggle]');
+        const isOpen = toggleBtn?.getAttribute('aria-expanded') === 'true';
+
+        if (closeBtn || overlay) {
+            e.preventDefault();
+            console.log('🔴 Cerrando menú por:', closeBtn ? 'botón cerrar' : 'overlay');
+            if (isOpen) {
+                const mobileMenu = document.querySelector('#mobile-menu');
+                const btn = document.querySelector('[data-menu-toggle]');
+                if (mobileMenu && btn) {
+                    btn.setAttribute('aria-expanded', 'false');
+                    mobileMenu.classList.add('hidden');
+                    mobileMenu.style.display = 'none';
+                    btn.querySelector('i').className = 'fas fa-bars text-2xl';
+                    btn.setAttribute('aria-label', 'Abrir menú');
+                    document.body.classList.remove('no-scroll');
+                    // Mostrar/ocultar overlay
+                    const overlayEl = document.querySelector('[data-menu-overlay]');
+                    if (overlayEl) {
+                        overlayEl.classList.add('hidden');
+                    }
+                    console.log('✅ Menú cerrado exitosamente');
+                }
+            }
+        } else if (link) {
+            console.log('🔗 Link clickeado, cerrando menú');
+            if (isOpen) {
+                const mobileMenu = document.querySelector('#mobile-menu');
+                const btn = document.querySelector('[data-menu-toggle]');
+                if (mobileMenu && btn) {
+                    btn.setAttribute('aria-expanded', 'false');
+                    mobileMenu.classList.add('hidden');
+                    mobileMenu.style.display = 'none';
+                    btn.querySelector('i').className = 'fas fa-bars text-2xl';
+                    btn.setAttribute('aria-label', 'Abrir menú');
+                    document.body.classList.remove('no-scroll');
+                    // Ocultar overlay
+                    const overlayEl = document.querySelector('[data-menu-overlay]');
+                    if (overlayEl) {
+                        overlayEl.classList.add('hidden');
+                    }
+                }
+            }
+        } else if (isOpen && !panel?.contains(e.target) && !toggleBtn?.contains(e.target)) {
+            console.log('🔴 Cerrando menú por clic fuera');
+            const mobileMenu = document.querySelector('#mobile-menu');
+            const btn = document.querySelector('[data-menu-toggle]');
+            if (mobileMenu && btn) {
+                btn.setAttribute('aria-expanded', 'false');
+                mobileMenu.classList.add('hidden');
+                mobileMenu.style.display = 'none';
+                btn.querySelector('i').className = 'fas fa-bars text-2xl';
+                btn.setAttribute('aria-label', 'Abrir menú');
+                document.body.classList.remove('no-scroll');
+                // Ocultar overlay
+                const overlayEl = document.querySelector('[data-menu-overlay]');
+                if (overlayEl) {
+                    overlayEl.classList.add('hidden');
+                }
+                console.log('✅ Menú cerrado exitosamente');
+            }
+        }
+    }, { capture: true });
+
+    // Cerrar con tecla Escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            const btn = document.querySelector('[data-menu-toggle]');
+            const isOpen = btn?.getAttribute('aria-expanded') === 'true';
+            if (isOpen) {
+                console.log('🔴 Cerrando menú con Escape');
+                const mobileMenu = document.querySelector('#mobile-menu');
+                if (mobileMenu && btn) {
+                    btn.setAttribute('aria-expanded', 'false');
+                    mobileMenu.classList.add('hidden');
+                    mobileMenu.style.display = 'none';
+                    btn.querySelector('i').className = 'fas fa-bars text-2xl';
+                    btn.setAttribute('aria-label', 'Abrir menú');
+                    document.body.classList.remove('no-scroll');
+                    // Ocultar overlay
+                    const overlayEl = document.querySelector('[data-menu-overlay]');
+                    if (overlayEl) {
+                        overlayEl.classList.add('hidden');
+                    }
+                    console.log('✅ Menú cerrado exitosamente');
+                }
+            }
+        }
     });
 }
 
