@@ -107,13 +107,6 @@ function startApp() {
 
     console.log('🚀 Iniciando aplicación...');
     
-    // Verificar que el menú esté inicializado
-    const menuBtn = document.querySelector('#menu-toggle');
-    if (menuBtn && !menuBtn._menuBound) {
-        console.log('⚠️ Menú no inicializado, ejecutando attachMenuListeners...');
-        attachMenuListeners();
-    }
-
     // Inicializar funcionalidades
     initFancybox();
     addScrollEffects();
@@ -163,190 +156,108 @@ function safeStartApp() {
 // Múltiples estrategias de inicialización para máxima compatibilidad iOS
 console.log('🔍 Script cargado. Estado DOM:', document.readyState);
 
-// Función robusta para verificar y ejecutar inicialización del menú
-function attachMenuListeners() {
-    console.log('🔍 Ejecutando attachMenuListeners...');
+// IIFE Principal - NUEVO SISTEMA ROBUSTO
+(() => {
+  window.SR = window.SR || {};
+  if (window.SR.__mainLoaded) {
+    console.warn('[SR] main bundle already loaded — skipping duplicate execution');
+    return;
+  }
+  window.SR.__mainLoaded = true;
+  
+  let menuController; // AbortController específico para el menú
+  
+  function setMenuState(isOpen) {
+    const btn = document.querySelector('[data-menu-toggle]');
+    const panel = document.querySelector('[data-menu-panel]') || document.getElementById('mobile-menu');
+    const overlay = document.querySelector('[data-menu-overlay]');
     
-    // Usar selectores amplios y robustos
-    const buttons = document.querySelectorAll('#menu-toggle, .hamburger, [data-menu-toggle]');
-    console.log('🔍 Botones encontrados:', buttons.length);
+    if (!btn || !panel) return;
     
-    if (buttons.length === 0) {
-        console.error('❌ NO se encontró ningún botón de menú hamburguesa');
-        return;
+    btn.setAttribute('aria-expanded', String(isOpen));
+    btn.setAttribute('aria-label', isOpen ? 'Cerrar menú' : 'Abrir menú');
+    panel.hidden = !isOpen;
+    document.body.classList.toggle('overflow-hidden', isOpen);
+    document.body.classList.toggle('touch-none', isOpen);
+    if (overlay) overlay.classList.toggle('hidden', !isOpen);
+    
+    // Cambiar ícono del botón
+    const icon = btn.querySelector('i');
+    if (icon) {
+      icon.className = isOpen ? 'fas fa-times text-2xl' : 'fas fa-bars text-2xl';
     }
-
-    buttons.forEach((btn, index) => {
-        console.log(`🔍 Procesando botón ${index + 1}:`, btn);
-        
-        // Evitar duplicar listeners
-        if (btn._menuBound) {
-            console.log(`⚠️ Botón ${index + 1} ya tiene listeners, saltando`);
-            return;
-        }
-        
-        btn._menuBound = true;
-        
-        // Función de toggle robusta
-        const toggleMenu = (e) => {
-            const now = Date.now();
-            if (now - lastToggleTime < DEBOUNCE_MS) {
-                console.log('⏭️ Toggle ignorado (debounce)');
-                return;
-            }
-            lastToggleTime = now;
-            console.log('🎯 Toggle menu disparado por:', e.type, 'en botón:', btn);
-            e?.preventDefault?.();
-            const mobileMenu = document.querySelector('#mobile-menu');
-            if (!mobileMenu) {
-                console.error('❌ No se encontró #mobile-menu');
-                return;
-            }
-            const isExpanded = btn.getAttribute('aria-expanded') === 'true';
-            const newState = !isExpanded;
-            console.log('📱 Cambiando estado del menú de', isExpanded, 'a', newState);
-            btn.setAttribute('aria-expanded', String(newState));
-            if (newState) {
-                mobileMenu.classList.remove('hidden');
-                mobileMenu.style.display = 'block';
-                btn.querySelector('i').className = 'fas fa-times text-2xl';
-                btn.setAttribute('aria-label', 'Cerrar menú');
-                document.body.classList.add('no-scroll');
-                // Mostrar overlay
-                const overlayEl = document.querySelector('[data-menu-overlay]');
-                if (overlayEl) {
-                    overlayEl.classList.remove('hidden');
-                }
-                console.log('✅ Menú abierto exitosamente');
-            } else {
-                mobileMenu.classList.add('hidden');
-                mobileMenu.style.display = 'none';
-                btn.querySelector('i').className = 'fas fa-bars text-2xl';
-                btn.setAttribute('aria-label', 'Abrir menú');
-                document.body.classList.remove('no-scroll');
-                // Ocultar overlay
-                const overlayEl = document.querySelector('[data-menu-overlay]');
-                if (overlayEl) {
-                    overlayEl.classList.add('hidden');
-                }
-                console.log('✅ Menú cerrado exitosamente');
-            }
-        };
-        
-        // Agregar múltiples event listeners para máxima compatibilidad
-    btn.addEventListener('click', toggleMenu);
-        btn.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                toggleMenu(e);
-            }
-        });
-        
-        // Configurar atributos de accesibilidad
-        btn.setAttribute('role', 'button');
-        btn.setAttribute('aria-expanded', 'false');
-        btn.setAttribute('aria-controls', 'mobile-menu');
-        btn.setAttribute('aria-label', 'Abrir menú');
-        
-        console.log(`✅ Listeners agregados exitosamente al botón ${index + 1}`);
-    });
-
-    // Delegación para cerrar menú: X, overlay, links, y clic fuera
+    
+    console.log(isOpen ? '✅ Menú abierto' : '✅ Menú cerrado');
+  }
+  
+  function initMenu() {
+    // Abortar listeners previos para evitar duplicados
+    if (menuController) {
+      menuController.abort();
+    }
+    menuController = new AbortController();
+    const { signal } = menuController;
+    
+    // UN SOLO listener con delegación
     document.addEventListener('click', (e) => {
-        const closeBtn = e.target.closest('[data-menu-close]');
-        const overlay = e.target.closest('[data-menu-overlay]');
-        const link = e.target.closest('[data-menu-panel] a[href]');
-        const panel = document.querySelector('[data-menu-panel]');
-        const toggleBtn = document.querySelector('[data-menu-toggle]');
-        const isOpen = toggleBtn?.getAttribute('aria-expanded') === 'true';
-
-        if (closeBtn || overlay) {
-            e.preventDefault();
-            console.log('🔴 Cerrando menú por:', closeBtn ? 'botón cerrar' : 'overlay');
-            if (isOpen) {
-                const mobileMenu = document.querySelector('#mobile-menu');
-                const btn = document.querySelector('[data-menu-toggle]');
-                if (mobileMenu && btn) {
-                    btn.setAttribute('aria-expanded', 'false');
-                    mobileMenu.classList.add('hidden');
-                    mobileMenu.style.display = 'none';
-                    btn.querySelector('i').className = 'fas fa-bars text-2xl';
-                    btn.setAttribute('aria-label', 'Abrir menú');
-                    document.body.classList.remove('no-scroll');
-                    // Mostrar/ocultar overlay
-                    const overlayEl = document.querySelector('[data-menu-overlay]');
-                    if (overlayEl) {
-                        overlayEl.classList.add('hidden');
-                    }
-                    console.log('✅ Menú cerrado exitosamente');
-                }
-            }
-        } else if (link) {
-            console.log('🔗 Link clickeado, cerrando menú');
-            if (isOpen) {
-                const mobileMenu = document.querySelector('#mobile-menu');
-                const btn = document.querySelector('[data-menu-toggle]');
-                if (mobileMenu && btn) {
-                    btn.setAttribute('aria-expanded', 'false');
-                    mobileMenu.classList.add('hidden');
-                    mobileMenu.style.display = 'none';
-                    btn.querySelector('i').className = 'fas fa-bars text-2xl';
-                    btn.setAttribute('aria-label', 'Abrir menú');
-                    document.body.classList.remove('no-scroll');
-                    // Ocultar overlay
-                    const overlayEl = document.querySelector('[data-menu-overlay]');
-                    if (overlayEl) {
-                        overlayEl.classList.add('hidden');
-                    }
-                }
-            }
-        } else if (isOpen && !panel?.contains(e.target) && !toggleBtn?.contains(e.target)) {
-            console.log('🔴 Cerrando menú por clic fuera');
-            const mobileMenu = document.querySelector('#mobile-menu');
-            const btn = document.querySelector('[data-menu-toggle]');
-            if (mobileMenu && btn) {
-                btn.setAttribute('aria-expanded', 'false');
-                mobileMenu.classList.add('hidden');
-                mobileMenu.style.display = 'none';
-                btn.querySelector('i').className = 'fas fa-bars text-2xl';
-                btn.setAttribute('aria-label', 'Abrir menú');
-                document.body.classList.remove('no-scroll');
-                // Ocultar overlay
-                const overlayEl = document.querySelector('[data-menu-overlay]');
-                if (overlayEl) {
-                    overlayEl.classList.add('hidden');
-                }
-                console.log('✅ Menú cerrado exitosamente');
-            }
-        }
-    }, { capture: true });
-
-    // Cerrar con tecla Escape
+      const btn = e.target.closest('[data-menu-toggle]');
+      const closeBtn = e.target.closest('[data-menu-close]');
+      const overlay = e.target.closest('[data-menu-overlay]');
+      const link = e.target.closest('[data-menu-panel] a[href]');
+      
+      if (btn) {
+        e.preventDefault();
+        e.stopPropagation(); // evita bubbling
+        const isOpen = btn.getAttribute('aria-expanded') === 'true';
+        console.log('🎯 Toggle por botón hamburguesa');
+        setMenuState(!isOpen);
+      } 
+      else if (closeBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('🔴 Cerrando por botón X');
+        setMenuState(false);
+      }
+      else if (overlay) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('🔴 Cerrando por overlay');
+        setMenuState(false);
+      }
+      else if (link) {
+        console.log('🔗 Cerrando por link');
+        setMenuState(false);
+        // NO prevenir default para permitir navegación
+      }
+    }, { capture: true, signal });
+    
+    // Cerrar con Escape
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            const btn = document.querySelector('[data-menu-toggle]');
-            const isOpen = btn?.getAttribute('aria-expanded') === 'true';
-            if (isOpen) {
-                console.log('🔴 Cerrando menú con Escape');
-                const mobileMenu = document.querySelector('#mobile-menu');
-                if (mobileMenu && btn) {
-                    btn.setAttribute('aria-expanded', 'false');
-                    mobileMenu.classList.add('hidden');
-                    mobileMenu.style.display = 'none';
-                    btn.querySelector('i').className = 'fas fa-bars text-2xl';
-                    btn.setAttribute('aria-label', 'Abrir menú');
-                    document.body.classList.remove('no-scroll');
-                    // Ocultar overlay
-                    const overlayEl = document.querySelector('[data-menu-overlay]');
-                    if (overlayEl) {
-                        overlayEl.classList.add('hidden');
-                    }
-                    console.log('✅ Menú cerrado exitosamente');
-                }
-            }
+      if (e.key === 'Escape') {
+        const btn = document.querySelector('[data-menu-toggle]');
+        const isOpen = btn?.getAttribute('aria-expanded') === 'true';
+        if (isOpen) {
+          console.log('🔴 Cerrando con Escape');
+          setMenuState(false);
         }
-    });
-}
+      }
+    }, { signal });
+    
+    // Opcional: cerrar al hacer clic fuera
+    document.addEventListener('click', (e) => {
+      const panel = document.querySelector('[data-menu-panel]');
+      const btn = document.querySelector('[data-menu-toggle]');
+      const isOpen = btn?.getAttribute('aria-expanded') === 'true';
+      
+      if (!isOpen) return;
+      
+      const clickedInside = panel?.contains(e.target) || btn?.contains(e.target);
+      if (!clickedInside && !e.target.closest('[data-menu-overlay]')) {
+        console.log('🔴 Cerrando por clic fuera');
+        setMenuState(false);
+      }
+    }, { capture: true, signal });
+  }
 
 // Inicialización robusta con debugging
 if (document.readyState === 'loading') {
@@ -354,14 +265,14 @@ if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function() {
         console.log('✅ DOMContentLoaded disparado');
         setVH();
-        attachMenuListeners();
+        initMenu();
         safeStartApp();
     }, { once: true });
 } else {
     console.log('✅ DOM ya listo, inicializando inmediatamente');
     setTimeout(function() {
         setVH();
-        attachMenuListeners(); 
+        initMenu(); 
         safeStartApp();
     }, 0);
 }
@@ -373,7 +284,7 @@ window.addEventListener('load', function() {
         console.log('⚠️ App no había iniciado, iniciando ahora...');
         setTimeout(function() {
             setVH();
-            attachMenuListeners();
+            initMenu();
             safeStartApp();
         }, 200);
     }
@@ -387,16 +298,9 @@ window.addEventListener('pageshow', function(event) {
     if (event.persisted) {
         console.log('🔄 Page restored from bfcache, reinitializing...');
         
-        // Limpiar flags de listeners para permitir re-enganche
-        document.querySelectorAll('#menu-toggle, .hamburger, [data-menu-toggle]')
-            .forEach(b => { 
-                b._menuBound = false; 
-                console.log('🧹 Flag _menuBound limpiado en botón:', b);
-            });
-            
         setTimeout(function() {
             setVH();
-            attachMenuListeners();
+            initMenu(); // reinicializar menú
             
             // Aplicar hotfix de overlays después del bfcache
             document.querySelectorAll('.overlay, .hero::before, .banner-overlay').forEach(el => {
@@ -411,7 +315,7 @@ window.addEventListener('pageshow', function(event) {
         if (!window.__appStarted) {
             setTimeout(function() {
                 setVH();
-                attachMenuListeners();
+                initMenu();
                 safeStartApp();
             }, 100);
         }
@@ -420,142 +324,17 @@ window.addEventListener('pageshow', function(event) {
 
 // Fallback final: forzar inicio después de 3 segundos si nada más funcionó
 setTimeout(function() {
-    const btn = document.querySelector('#menu-toggle');
-    if (!btn || !btn._menuBound) {
-        console.warn('🚨 FORCING menu initialization after timeout');
-        console.log('🔍 Estado del botón:', btn);
-        console.log('🔍 ¿Tiene listeners?', btn?._menuBound);
-        
+    if (!window.__appStarted) {
+        console.warn('🚨 FORCING app initialization after timeout');
         setVH();
-        attachMenuListeners();
-        
-        if (!window.__appStarted) {
-            safeStartApp();
-        }
+        initMenu();
+        safeStartApp();
     }
 }, 3000);
 
-// SPA navigation removed; site is now multipage
-
-// Instancia global para evitar reinicializaciones innecesarias
-
-// Inicializar Swiper para carruseles (si está visible o forzando)
-function initSwiper() {
-    // No forzar en carga inicial; se hará al ser visible o al activar la página
-    ensurePromotionsSwiper(false);
-}
-
-// Asegurar que el carrusel esté inicializado/actualizado cuando sea visible
-let __swiperWaitTimer = null;
-function ensurePromotionsSwiper(forceInit = false) {
-    const container = document.querySelector('#promotions-carousel');
-    if (typeof window.Swiper === 'undefined') {
-        if (!__swiperWaitTimer) {
-            __swiperWaitTimer = setInterval(() => {
-                if (typeof window.Swiper !== 'undefined') {
-                    clearInterval(__swiperWaitTimer);
-                    __swiperWaitTimer = null;
-                    ensurePromotionsSwiper(true);
-                }
-            }, 150);
-        }
-        return;
-    }
-    if (!container) return;
-
-    // Destruir instancia previa completamente
-    if (window.SR && window.SR.promotionsSwiper) {
-        try {
-            window.SR.promotionsSwiper.destroy(true, true);
-        } catch (e) {
-            console.warn('Error destroying Swiper:', e);
-        }
-        window.SR.promotionsSwiper = null;
-    }
-
-    // Limpiar dots huérfanos manualmente
-    const oldPagination = container.querySelector('.swiper-pagination');
-    if (oldPagination) oldPagination.innerHTML = '';
-
-    // Validar visibilidad del contenedor
-    if (container.offsetParent === null) {
-        console.warn('Swiper container not visible yet, deferring init');
-        const observer = new IntersectionObserver((entries) => {
-            if (entries[0].isIntersecting) {
-                observer.disconnect();
-                ensurePromotionsSwiper(true);
-            }
-        });
-        observer.observe(container);
-        return;
-    }
-
-    // Inicializar Swiper con configuración robusta
-    window.SR.promotionsSwiper = new Swiper('#promotions-carousel', {
-        slidesPerView: 1,
-        spaceBetween: 20,
-        pagination: {
-            el: '#promotions-carousel .swiper-pagination',
-            clickable: true,
-            dynamicBullets: false,
-            renderBullet: function (index, className) {
-                return `<span class="${className}" role="button" aria-label="Ir a slide ${index + 1}"></span>`;
-            },
-        },
-        navigation: {
-            nextEl: '#promotions-carousel .swiper-button-next',
-            prevEl: '#promotions-carousel .swiper-button-prev',
-        },
-        breakpoints: {
-            640: { slidesPerView: 2, spaceBetween: 20 },
-            1024: { slidesPerView: 3, spaceBetween: 30 },
-        },
-        loop: true,
-        autoplay: {
-            delay: 5000,
-            disableOnInteraction: false,
-            pauseOnMouseEnter: true,
-        },
-        observer: true,
-        observeParents: true,
-        observeSlideChildren: true,
-        on: {
-            init: function () {
-                console.log('✅ Swiper inicializado con', this.slides.length, 'slides');
-                this.pagination.render();
-                this.pagination.update();
-            },
-            slideChange: function () {
-                console.log('📍 Slide activo:', this.activeIndex);
-            },
-        },
-    });
-
-    // Forzar update inicial
-    setTimeout(() => {
-        if (window.SR.promotionsSwiper) {
-            window.SR.promotionsSwiper.update();
-            window.SR.promotionsSwiper.pagination.render();
-            window.SR.promotionsSwiper.pagination.update();
-        }
-    }, 100);
-}
-
-// Observar visibilidad del carrusel para inicializar cuando aparezca en viewport
-function watchCarouselVisibility() {
-    const container = document.querySelector('#promotions-carousel');
-    if (!('IntersectionObserver' in window) || !container) return;
-    const obs = new IntersectionObserver((entries) => {
-        entries.forEach((e) => {
-            if (e.isIntersecting) {
-                ensurePromotionsSwiper(true);
-                // tras inicializar, no necesitamos seguir observando
-                obs.disconnect();
-            }
-        });
-    }, { threshold: 0.1 });
-    obs.observe(container);
-}
+// ============================================================================
+// FUNCIONES AUXILIARES (fuera del IIFE principal)
+// ============================================================================
 
 // Inicializar Fancybox para galería de imágenes
 function initFancybox() {
@@ -754,20 +533,143 @@ function initModals() {
 // - Gestión de overflow: hidden problemática
 // ==============================================================================
 
-// Guard anti-carga doble y namespace global
-(function(){
-    window.SR = window.SR || {};
-    if (window.SR.__mainLoaded) {
-        console.warn('[SR] main bundle already loaded - skipping duplicate execution');
+  
+  
+  // ============================================================================
+  // SWIPER MANAGEMENT
+  // ============================================================================
+  
+  // Asegurar que el carrusel esté inicializado/actualizado cuando sea visible
+  let __swiperWaitTimer = null;
+  function ensurePromotionsSwiper(forceInit = false) {
+    const container = document.querySelector('#promotions-carousel');
+    if (typeof window.Swiper === 'undefined') {
+        if (!__swiperWaitTimer) {
+            __swiperWaitTimer = setInterval(() => {
+                if (typeof window.Swiper !== 'undefined') {
+                    clearInterval(__swiperWaitTimer);
+                    __swiperWaitTimer = null;
+                    ensurePromotionsSwiper(true);
+                }
+            }, 150);
+        }
         return;
     }
-    window.SR.__mainLoaded = true;
-        // Back-compat: stubs y alias globales para evitar ReferenceError tempranos
-        window.SR.initPromotionsSwiper = window.SR.initPromotionsSwiper || function(){};
-        window.SR.destroyPromotionsSwiper = window.SR.destroyPromotionsSwiper || function(){};
-        // Permite que el código legado que llama initPromotionsSwiper() global no rompa
-        window.initPromotionsSwiper = window.initPromotionsSwiper || function(){ return window.SR.initPromotionsSwiper?.(); };
-        window.destroyPromotionsSwiper = window.destroyPromotionsSwiper || function(){ return window.SR.destroyPromotionsSwiper?.(); };
-    // ...resto del código robusto de menú y Swiper...
+    if (!container) return;
+
+    // Destruir instancia previa completamente
+    if (window.SR && window.SR.promotionsSwiper) {
+        try {
+            window.SR.promotionsSwiper.destroy(true, true);
+        } catch (e) {
+            console.warn('Error destroying Swiper:', e);
+        }
+        window.SR.promotionsSwiper = null;
+    }
+
+    // Limpiar dots huérfanos manualmente
+    const oldPagination = container.querySelector('.swiper-pagination');
+    if (oldPagination) oldPagination.innerHTML = '';
+
+    // Validar visibilidad del contenedor
+    if (container.offsetParent === null) {
+        console.warn('Swiper container not visible yet, deferring init');
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+                observer.disconnect();
+                ensurePromotionsSwiper(true);
+            }
+        });
+        observer.observe(container);
+        return;
+    }
+
+    try {
+        window.SR.promotionsSwiper = new window.Swiper(container, {
+            slidesPerView: 1,
+            spaceBetween: 20,
+            loop: false,
+            grabCursor: true,
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+                dynamicBullets: true
+            },
+            breakpoints: {
+                640: { slidesPerView: 2 },
+                1024: { slidesPerView: 3 }
+            },
+            on: {
+                init() {
+                    console.log('✅ Swiper inicializado correctamente');
+                    this.pagination.render();
+                    this.pagination.update();
+                }
+            }
+        });
+    } catch (error) {
+        console.error('Error initializing Swiper:', error);
+    }
+  }
+
+  // Inicializar Swiper para carruseles (si está visible o forzando)
+  function initSwiper() {
+    // No forzar en carga inicial; se hará al ser visible o al activar la página
+    ensurePromotionsSwiper(false);
+  }
+  
+  // ============================================================================
+  // MODALS & GA INTERACTIONS (placeholder functions)
+  // ============================================================================
+  
+  function initModals() {
+    // Esta función ya existe más abajo, placeholder aquí
+    return;
+  }
+  
+  
+  // Función principal de inicialización
+  function safeStartApp() {
+    if (window.__appStarted) {
+      console.log('🔄 App ya iniciada, saltando reinicialización');
+      return;
+    }
+    window.__appStarted = true;
+    console.log('🚀 Iniciando app...');
+    
+    initMenu();
+    initSwiper();
+    setVH();
+    
+    // Llamar funciones externas si existen
+    if (typeof initFancybox === 'function') initFancybox();
+    if (typeof addScrollEffects === 'function') addScrollEffects();
+    if (typeof initModals === 'function') initModals();
+    if (typeof initGAInteractions === 'function') initGAInteractions();
+    
+    console.log('✅ App iniciada correctamente');
+  }
+  
+  // Event listeners principales
+  window.addEventListener('pageshow', (e) => {
+    if (e.persisted) {
+      console.log('🔄 pageshow con BFCache, reinicializando');
+      initMenu(); // reinicializar menú
+      initSwiper();
+    }
+  });
+  
+  window.addEventListener('pagehide', () => {
+    menuController?.abort();
+    setMenuState(false);
+  });
+  
+  // Inicialización
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', safeStartApp);
+  } else {
+    safeStartApp();
+  }
+  
 })();
 
