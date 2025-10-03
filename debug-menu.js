@@ -2,33 +2,9 @@
 (function(){
   const selectors = ['#menu-toggle', '#menuToggle', '.hamburger', '[data-menu-toggle]'];
   const navSelectors = ['#mainNav', '.main-nav', 'nav[role="navigation"]', '#navbar'];
-  let logDiv;
 
   function log(msg, type='info') {
     console[type === 'error' ? 'error' : 'log']('[DEBUG-MENU]', msg);
-    if (logDiv) {
-      const el = document.createElement('div');
-      el.textContent = `[DEBUG-MENU] ${msg}`;
-      el.style.color = type === 'error' ? '#c00' : '#222';
-      logDiv.appendChild(el);
-    }
-  }
-
-  function setupVisualConsole() {
-    logDiv = document.createElement('div');
-    logDiv.style.position = 'fixed';
-    logDiv.style.bottom = '0';
-    logDiv.style.left = '0';
-    logDiv.style.width = '100vw';
-    logDiv.style.maxHeight = '40vh';
-    logDiv.style.overflowY = 'auto';
-    logDiv.style.zIndex = '99999';
-    logDiv.style.background = 'rgba(255,255,255,0.95)';
-    logDiv.style.fontSize = '14px';
-    logDiv.style.fontFamily = 'monospace';
-    logDiv.style.borderTop = '2px solid #f90';
-    logDiv.style.pointerEvents = 'none';
-    document.body.appendChild(logDiv);
   }
 
   function findButton() {
@@ -84,7 +60,6 @@
   }
 
   function runDebugMenu() {
-    setupVisualConsole();
     log('Script de debugging de menú hamburguesa cargado.');
     const btn = findButton();
     const nav = findNav();
