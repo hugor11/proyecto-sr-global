@@ -91,6 +91,13 @@ function setVH() {
       return;
     }
     
+    console.log('🔧 setMenuState llamado con isOpen:', isOpen);
+    console.log('📦 Panel antes:', {
+      hasHidden: panel.hasAttribute('hidden'),
+      display: getComputedStyle(panel).display,
+      classes: panel.className
+    });
+    
     // Modificar atributos
     btn.setAttribute('aria-expanded', String(isOpen));
     btn.setAttribute('aria-label', isOpen ? 'Cerrar menú' : 'Abrir menú');
@@ -98,9 +105,17 @@ function setVH() {
     // CRÍTICO: quitar/agregar hidden explícitamente
     if (isOpen) {
       panel.removeAttribute('hidden');
+      console.log('✅ Atributo hidden REMOVIDO');
     } else {
       panel.setAttribute('hidden', '');
+      console.log('✅ Atributo hidden AGREGADO');
     }
+    
+    console.log('📦 Panel después:', {
+      hasHidden: panel.hasAttribute('hidden'),
+      display: getComputedStyle(panel).display,
+      rect: panel.getBoundingClientRect()
+    });
     
     // Bloqueo de scroll
     document.body.classList.toggle('overflow-hidden', isOpen);
