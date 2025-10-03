@@ -1,0 +1,15 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Update cache-busters to v19",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-Command",
+				"(Get-ChildItem -Path . -Filter *.html) | ForEach-Object { (Get-Content $_.FullName -Raw) -replace 'script.min.js\\?v=\\d+','script.min.js?v=19' | Set-Content $_.FullName }"
+			]
+		}
+	]
+}

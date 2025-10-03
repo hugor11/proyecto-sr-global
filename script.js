@@ -1,6 +1,8 @@
 // Guard anti-doble-toggle
 let lastToggleTime = 0;
 const DEBOUNCE_MS = 300;
+// Swiper wait timer (hoisted early to avoid TDZ when ensurePromotionsSwiper runs during init)
+var __swiperWaitTimer = null;
 // SR Global Experiences - Script Principal
 
 // Polyfills y correcciones específicas para iOS/Safari
@@ -267,7 +269,7 @@ function setVH() {
 // ============================================================================
 
 // Asegurar que el carrusel esté inicializado/actualizado cuando sea visible
-let __swiperWaitTimer = null;
+// __swiperWaitTimer declared at top to avoid TDZ
 function ensurePromotionsSwiper(forceInit = false) {
     const container = document.querySelector('#promotions-carousel');
     if (typeof window.Swiper === 'undefined') {
