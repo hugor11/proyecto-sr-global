@@ -1,3 +1,6 @@
+// Guard anti-doble-toggle
+let lastToggleTime = 0;
+const DEBOUNCE_MS = 300;
 // SR Global Experiences - Script Principal
 
 // Polyfills y correcciones específicas para iOS/Safari
@@ -186,25 +189,24 @@ function attachMenuListeners() {
         
         // Función de toggle robusta
         const toggleMenu = (e) => {
+            const now = Date.now();
+            if (now - lastToggleTime < DEBOUNCE_MS) {
+                console.log('⏭️ Toggle ignorado (debounce)');
+                return;
+            }
+            lastToggleTime = now;
             console.log('🎯 Toggle menu disparado por:', e.type, 'en botón:', btn);
             e?.preventDefault?.();
-            
             const mobileMenu = document.querySelector('#mobile-menu');
             if (!mobileMenu) {
                 console.error('❌ No se encontró #mobile-menu');
                 return;
             }
-            
             const isExpanded = btn.getAttribute('aria-expanded') === 'true';
             const newState = !isExpanded;
-            
             console.log('📱 Cambiando estado del menú de', isExpanded, 'a', newState);
-            
-            // Actualizar estado
             btn.setAttribute('aria-expanded', String(newState));
-            
             if (newState) {
-                // Abrir menú
                 mobileMenu.classList.remove('hidden');
                 mobileMenu.style.display = 'block';
                 btn.querySelector('i').className = 'fas fa-times text-2xl';
@@ -212,7 +214,6 @@ function attachMenuListeners() {
                 document.body.classList.add('no-scroll');
                 console.log('✅ Menú abierto exitosamente');
             } else {
-                // Cerrar menú
                 mobileMenu.classList.add('hidden');
                 mobileMenu.style.display = 'none';
                 btn.querySelector('i').className = 'fas fa-bars text-2xl';

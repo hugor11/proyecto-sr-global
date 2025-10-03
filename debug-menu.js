@@ -43,7 +43,7 @@
   function addListeners(btn, nav) {
     if (!btn) return;
     let attached = false;
-    ['click','pointerup'].forEach(evt => {
+  ['click'].forEach(evt => {
       btn.addEventListener(evt, function(e){
         log(`Evento ${evt} disparado en botón hamburguesa.`);
         toggleMenu(btn, nav);
@@ -56,7 +56,7 @@
         toggleMenu(btn, nav);
       }
     });
-    if (attached) log('Listeners de click/pointerup agregados al botón hamburguesa.');
+  if (attached) log('Listeners de click agregados al botón hamburguesa.');
   }
 
   function runDebugMenu() {
