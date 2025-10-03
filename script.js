@@ -342,7 +342,6 @@ function initSwiper() {
 let __swiperWaitTimer = null;
 function ensurePromotionsSwiper(forceInit = false) {
     const container = document.querySelector('#promotions-carousel');
-    // Si Swiper aún no está disponible, reintentar pronto sin inundar
     if (typeof window.Swiper === 'undefined') {
         if (!__swiperWaitTimer) {
             __swiperWaitTimer = setInterval(() => {
@@ -357,43 +356,82 @@ function ensurePromotionsSwiper(forceInit = false) {
     }
     if (!container) return;
 
-    const isVisible = !!(container.offsetParent || container.getClientRects().length);
-
-    if (!promotionsSwiper) {
-        if (!isVisible && !forceInit) return; // espera a visibilidad
+    // Destruir instancia previa completamente
+    if (window.SR && window.SR.promotionsSwiper) {
         try {
-    promotionsSwiper = new Swiper('#promotions-carousel', {
-                slidesPerView: 1,
-                spaceBetween: 20,
-                pagination: {
+            window.SR.promotionsSwiper.destroy(true, true);
+        } catch (e) {
+            console.warn('Error destroying Swiper:', e);
+        }
+        window.SR.promotionsSwiper = null;
+    }
+
+    // Limpiar dots huérfanos manualmente
+    const oldPagination = container.querySelector('.swiper-pagination');
+    if (oldPagination) oldPagination.innerHTML = '';
+
+    // Validar visibilidad del contenedor
+    if (container.offsetParent === null) {
+        console.warn('Swiper container not visible yet, deferring init');
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+                observer.disconnect();
+                ensurePromotionsSwiper(true);
+            }
+        });
+        observer.observe(container);
+        return;
+    }
+
+    // Inicializar Swiper con configuración robusta
+    window.SR.promotionsSwiper = new Swiper('#promotions-carousel', {
+        slidesPerView: 1,
+        spaceBetween: 20,
+        pagination: {
             el: '#promotions-carousel .swiper-pagination',
-                    clickable: true,
-                },
-                navigation: {
+            clickable: true,
+            dynamicBullets: false,
+            renderBullet: function (index, className) {
+                return `<span class="${className}" role="button" aria-label="Ir a slide ${index + 1}"></span>`;
+            },
+        },
+        navigation: {
             nextEl: '#promotions-carousel .swiper-button-next',
             prevEl: '#promotions-carousel .swiper-button-prev',
-                },
-                breakpoints: {
-                    640: { slidesPerView: 2, spaceBetween: 20 },
-                    1024: { slidesPerView: 3, spaceBetween: 30 },
-                },
-                loop: true,
-                autoplay: { delay: 5000, disableOnInteraction: false },
-                observer: true,
-                observeParents: true,
-            });
-            // pequeña actualización tras layout
-            setTimeout(() => promotionsSwiper && promotionsSwiper.update(), 100);
-            console.log('✅ Swiper inicializado');
-        } catch (error) {
-            console.error('❌ Error al inicializar Swiper:', error);
+        },
+        breakpoints: {
+            640: { slidesPerView: 2, spaceBetween: 20 },
+            1024: { slidesPerView: 3, spaceBetween: 30 },
+        },
+        loop: true,
+        autoplay: {
+            delay: 5000,
+            disableOnInteraction: false,
+            pauseOnMouseEnter: true,
+        },
+        observer: true,
+        observeParents: true,
+        observeSlideChildren: true,
+        on: {
+            init: function () {
+                console.log('✅ Swiper inicializado con', this.slides.length, 'slides');
+                this.pagination.render();
+                this.pagination.update();
+            },
+            slideChange: function () {
+                console.log('📍 Slide activo:', this.activeIndex);
+            },
+        },
+    });
+
+    // Forzar update inicial
+    setTimeout(() => {
+        if (window.SR.promotionsSwiper) {
+            window.SR.promotionsSwiper.update();
+            window.SR.promotionsSwiper.pagination.render();
+            window.SR.promotionsSwiper.pagination.update();
         }
-    } else {
-        try {
-            promotionsSwiper.update();
-            console.log('🔄 Swiper actualizado');
-        } catch {}
-    }
+    }, 100);
 }
 
 // Observar visibilidad del carrusel para inicializar cuando aparezca en viewport
