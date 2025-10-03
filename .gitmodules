@@ -1,6 +1,0 @@
-[submodule "sr-global-nextjs"]
-	path = sr-global-nextjs
-	url = https://github.com/hugor11/sr-global-nextjs.git
-[submodule "sr-global-original"]
-	path = sr-global-original
-	url = https://github.com/hugor11/sr-global-original.git
