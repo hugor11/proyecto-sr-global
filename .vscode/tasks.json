@@ -10,6 +10,11 @@
 				"-Command",
 				"(Get-ChildItem -Path . -Filter *.html) | ForEach-Object { (Get-Content $_.FullName -Raw) -replace 'script.min.js\\?v=\\d+','script.min.js?v=19' | Set-Content $_.FullName }"
 			]
+		},
+		{
+			"label": "Rebuild CSS (min)",
+			"type": "shell",
+			"command": "node -e \"const fs=require('fs'); fs.copyFileSync('style.css','style.min.css'); console.log('style.min.css updated from style.css');\""
 		}
 	]
 }

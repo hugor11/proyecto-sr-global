@@ -83,59 +83,32 @@ function setVH() {
   
   let menuController; // AbortController específico para el menú
   
-  function setMenuState(isOpen) {
-    const btn = document.querySelector('[data-menu-toggle]');
-    const panel = document.querySelector('[data-menu-panel]') || document.getElementById('mobile-menu');
-    const overlay = document.querySelector('[data-menu-overlay]');
-    
-    if (!btn || !panel) {
-      console.warn('⚠️ No se encontró botón o panel');
-      return;
+    function setMenuState(isOpen) {
+        const btn = document.querySelector('[data-menu-toggle]');
+        const panel = document.querySelector('#mobile-menu') || document.querySelector('[data-menu-panel]');
+        const overlay = document.querySelector('#menu-overlay') || document.querySelector('[data-menu-overlay]');
+        if (!btn || !panel || !overlay) {
+            console.warn('⚠️ Faltan elementos del menú (btn/panel/overlay)');
+            return;
+        }
+
+        // ARIA
+        btn.setAttribute('aria-expanded', String(isOpen));
+        btn.setAttribute('aria-label', isOpen ? 'Cerrar menú' : 'Abrir menú');
+
+        // Clase en body para bloquear scroll
+        document.body.classList.toggle('menu-open', isOpen);
+
+        // Panel/overlay usando clases simples
+        panel.classList.toggle('is-open', isOpen);
+        overlay.classList.toggle('is-visible', isOpen);
+
+        // Icono
+        const icon = btn.querySelector('i');
+        if (icon) icon.className = isOpen ? 'fas fa-times text-2xl' : 'fas fa-bars text-2xl';
+
+        console.log(isOpen ? '✅ Menú abierto' : '✅ Menú cerrado');
     }
-    
-    console.log('🔧 setMenuState llamado con isOpen:', isOpen);
-    console.log('📦 Panel antes:', {
-      hasHidden: panel.hasAttribute('hidden'),
-      display: getComputedStyle(panel).display,
-      classes: panel.className
-    });
-    
-    // Modificar atributos
-    btn.setAttribute('aria-expanded', String(isOpen));
-    btn.setAttribute('aria-label', isOpen ? 'Cerrar menú' : 'Abrir menú');
-    
-    // CRÍTICO: quitar/agregar hidden explícitamente
-    if (isOpen) {
-      panel.removeAttribute('hidden');
-      console.log('✅ Atributo hidden REMOVIDO');
-    } else {
-      panel.setAttribute('hidden', '');
-      console.log('✅ Atributo hidden AGREGADO');
-    }
-    
-    console.log('📦 Panel después:', {
-      hasHidden: panel.hasAttribute('hidden'),
-      display: getComputedStyle(panel).display,
-      rect: panel.getBoundingClientRect()
-    });
-    
-    // Bloqueo de scroll
-    document.body.classList.toggle('overflow-hidden', isOpen);
-    document.body.classList.toggle('touch-none', isOpen);
-    
-    // Overlay
-    if (overlay) {
-      overlay.classList.toggle('hidden', !isOpen);
-    }
-    
-    // Cambiar ícono del botón
-    const icon = btn.querySelector('i');
-    if (icon) {
-      icon.className = isOpen ? 'fas fa-times text-2xl' : 'fas fa-bars text-2xl';
-    }
-    
-    console.log(isOpen ? '✅ Menú abierto' : '✅ Menú cerrado');
-  }
   
   function initMenu() {
     // Abortar listeners previos
@@ -159,51 +132,26 @@ function setVH() {
       }
     }
     
-    // 🎯 Listener principal
-    document.addEventListener('click', (e) => {
-      // ORDEN CRÍTICO: verificar enlaces PRIMERO
-      const link = e.target.closest('[data-menu-panel] a[href]');
-      if (link) {
-        console.log('🔗 Navegando a:', link.href);
-        // NO hacer preventDefault - dejar que navegue
-        // Cerrar menú DESPUÉS de un micro-delay
-        setTimeout(() => setMenuState(false), 100);
-        return; // SALIR - no procesar nada más
-      }
-      
-      // Luego verificar si el clic fue dentro del panel (pero no en X)
-      const clickedPanel = e.target.closest('[data-menu-panel]');
-      const closeBtn = e.target.closest('[data-menu-close]');
-      
-      if (clickedPanel && !closeBtn) {
-        console.log('🔵 Clic dentro del panel, ignorando');
-        return; // SALIR
-      }
-      
-      // Ahora sí, procesar botones de control
-      const btn = e.target.closest('[data-menu-toggle]');
-      const overlay = e.target.closest('[data-menu-overlay]');
-      
-      if (btn) {
-        e.preventDefault();
-        e.stopPropagation();
-        const isOpen = btn.getAttribute('aria-expanded') === 'true';
-        console.log('🎯 Toggle por botón hamburguesa');
-        setMenuState(!isOpen);
-      } 
-      else if (closeBtn) {
-        e.preventDefault();
-        e.stopPropagation();
-        console.log('🔴 Cerrando por botón X');
-        setMenuState(false);
-      }
-      else if (overlay) {
-        e.preventDefault();
-        e.stopPropagation();
-        console.log('🔴 Cerrando por overlay (fondo oscuro)');
-        setMenuState(false);
-      }
-    }, { capture: true, signal });
+        // 🎯 Listener principal (simple, sin capture y sin bloquear enlaces)
+            document.addEventListener('click', (e) => {
+                const link = e.target.closest('#mobile-menu a[href]');
+                if (link) {
+                    setMenuState(false);
+                    return;
+                }
+
+            if (e.target.closest('[data-menu-toggle]')) {
+                const btn = e.target.closest('[data-menu-toggle]');
+                const isOpen = btn.getAttribute('aria-expanded') === 'true';
+                setMenuState(!isOpen);
+                return;
+            }
+
+            if (e.target.closest('[data-menu-close]') || e.target.closest('#menu-overlay')) {
+                setMenuState(false);
+                return;
+            }
+        }, { signal });
     
     // � Cerrar con Escape
     document.addEventListener('keydown', (e) => {

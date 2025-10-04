@@ -241,23 +241,35 @@ body {
   }
 }
 
-/* Overlay oscuro cuando el menú está abierto */
-.menu-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 9998;
+/* Menu overlay/panel and scroll lock (class-based simple system) */
+#menu-overlay {
+  /* Hidden by default */
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
+  pointer-events: none;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
 }
 
-.menu-overlay.active {
+#menu-overlay.is-visible {
   opacity: 1;
   visibility: visible;
+  pointer-events: auto;
+}
+
+#mobile-menu {
+  /* Off-canvas by default using translateX */
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+}
+
+#mobile-menu.is-open {
+  transform: translateX(0%);
+}
+
+/* Prevent body scroll when menu is open */
+body.menu-open {
+  overflow: hidden;
+  touch-action: none;
 }
 
 /* Mejoras para el botón del menú móvil */
@@ -282,41 +294,7 @@ body {
   transition: transform 0.3s ease;
 }
 
-/* Animación del menú móvil */
-#mobile-menu {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  transform-origin: top;
-}
-
-#mobile-menu.hidden {
-  animation: slideUp 0.3s ease forwards;
-}
-
-#mobile-menu:not(.hidden) {
-  animation: slideDown 0.3s ease forwards;
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-}
+/* Remove previous slide up/down keyframes system to avoid conflicts */
 
 /* Mejoras específicas para iOS Safari */
 @supports (-webkit-touch-callout: none) {

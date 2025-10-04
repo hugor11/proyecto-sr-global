@@ -1,1 +1,358 @@
-/* SR Global Experiences - Minified CSS */:root{--brand-orange:#FF6B35;--brand-dark:#313949;--brand-turquoise:#009688;--brand-blue:#0288D1}.font-pacifico{font-family:'Pacifico',cursive}.font-poppins{font-family:'Poppins',sans-serif}.text-brand-orange{color:var(--brand-orange)}.text-brand-dark{color:var(--brand-dark)}.text-brand-turquoise{color:var(--brand-turquoise)}.text-brand-blue{color:var(--brand-blue)}.bg-brand-orange{background-color:var(--brand-orange)}.bg-brand-dark{background-color:var(--brand-dark)}.bg-brand-turquoise{background-color:var(--brand-turquoise)}.bg-brand-blue{background-color:var(--brand-blue)}.page-content{display:none}.page-content.active{display:block}.explore-card{transition:all .3s ease}.explore-card:hover{transform:translateY(-10px)}.explore-card img{transition:all .5s ease}.explore-card:hover img{transform:scale(1.05)}.destination-circle img{transition:transform .3s ease}.destination-circle:hover img{transform:scale(1.05)}.service-card{transition:transform .3s ease,box-shadow .3s ease}.service-card:hover{transform:translateY(-5px);box-shadow:0 10px 20px rgba(0,0,0,.1)}.whatsapp-float{position:fixed;width:60px;height:60px;bottom:40px;right:40px;background-color:#25d366;color:#FFF;border-radius:50px;text-align:center;font-size:30px;box-shadow:0 4px 10px rgba(0,0,0,.15);z-index:100;transition:all .3s ease}.whatsapp-float:hover{transform:scale(1.1);box-shadow:0 6px 15px rgba(0,0,0,.2)}#crmWebToEntityForm{background-color:#fff;border-radius:8px;padding:20px;box-shadow:0 4px 6px rgba(0,0,0,.05)}@media (max-width:768px){.whatsapp-float{width:50px;height:50px;bottom:20px;right:20px;font-size:25px}}.clip-path-diagonal{clip-path:polygon(30% 0,100% 0,100% 100%,0% 100%)}#promotions-carousel{position:relative;overflow:hidden}#promotions-carousel .swiper-wrapper{align-items:stretch}#promotions-carousel .swiper-slide{height:auto}#promotions-carousel .swiper-pagination{position:relative;display:flex;justify-content:center;gap:8px;margin-top:16px}#promotions-carousel .swiper-pagination-bullet{background:#009688;opacity:.3;width:12px;height:12px;transition:all .3s ease}#promotions-carousel .swiper-pagination-bullet-active{background:#ff7043;opacity:1;transform:scale(1.1)}#promotions-carousel .swiper-button-prev,#promotions-carousel .swiper-button-next{position:relative;color:#009688;background:#fff;border-radius:50%;width:44px;height:44px;box-shadow:0 4px 12px rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center}#promotions-carousel .swiper-button-prev:hover,#promotions-carousel .swiper-button-next:hover{background:#009688;color:#fff;transform:scale(1.05)}#promotions-carousel .swiper-button-prev:after,#promotions-carousel .swiper-button-next:after{font-size:16px;font-weight:700}
+/* Estilos personalizados para SR Global Experiences */
+
+/* Variables de colores personalizados */
+:root {
+  --brand-orange: #FF6B35;
+  --brand-dark: #313949;
+  --brand-turquoise: #009688;
+  --brand-blue: #0288D1;
+  --vh: 1vh; /* Variable para altura viewport en iOS */
+}
+
+/* Reset para mejor compatibilidad cross-browser */
+* {
+  box-sizing: border-box;
+}
+
+/* Fix para iOS: evitar zoom al hacer tap en inputs */
+input, select, textarea, button {
+  font-size: 16px !important; /* Prevenir zoom en iOS */
+}
+
+/* Fix para dispositivos touch */
+.touch-device button,
+.touch-device a,
+.touch-device [role="button"] {
+  cursor: pointer;
+}
+
+/* Mejores estilos de touch para iOS */
+button, a, [role="button"] {
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation; /* Mejor respuesta touch */
+}
+
+/* Fix para iOS: mejor rendering de fuentes */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Fix para scroll en iOS */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Estilos de fuentes */
+.font-pacifico {
+  font-family: 'Pacifico', cursive;
+}
+
+.font-poppins {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Colores de marca */
+.text-brand-orange {
+  color: var(--brand-orange);
+}
+
+.text-brand-dark {
+  color: var(--brand-dark);
+}
+
+/* Selector de idioma - estado activo */
+.lang-selector-active {
+  color: var(--brand-orange) !important;
+  font-weight: 900 !important;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.text-brand-turquoise {
+  color: var(--brand-turquoise);
+}
+
+.text-brand-blue {
+  color: var(--brand-blue);
+}
+
+.bg-brand-orange {
+  background-color: var(--brand-orange);
+}
+
+.bg-brand-dark {
+  background-color: var(--brand-dark);
+}
+
+.bg-brand-turquoise {
+  background-color: var(--brand-turquoise);
+}
+
+.bg-brand-blue {
+  background-color: var(--brand-blue);
+}
+
+/* Estilos para el manejo de páginas en SPA */
+.page-content {
+  display: none;
+}
+
+.page-content.active {
+  display: block;
+}
+
+/* Estilos para la sección "FORMAS DE EXPLORAR EL MUNDO" */
+.explore-card {
+  transition: all 0.3s ease;
+}
+
+.explore-card:hover {
+  transform: translateY(-10px);
+}
+
+.explore-card img {
+  transition: all 0.5s ease;
+}
+
+.explore-card:hover img {
+  transform: scale(1.05);
+}
+
+/* Estilos para destinos y servicios */
+.destination-circle img {
+  transition: transform 0.3s ease;
+}
+
+.destination-circle:hover img {
+  transform: scale(1.05);
+}
+
+.service-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.service-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Botón flotante de WhatsApp */
+.whatsapp-float {
+  position: fixed;
+  width: 60px;
+  height: 60px;
+  bottom: 40px;
+  right: 40px;
+  background-color: #25d366;
+  color: #FFF;
+  border-radius: 50px;
+  text-align: center;
+  font-size: 30px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  transition: all 0.3s ease;
+  /* Fix para iOS */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.whatsapp-float:hover {
+  transform: scale(1.1) translateZ(0);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Fix para iOS: mejor comportamiento del menú móvil */
+#mobile-menu {
+  /* Usar altura viewport con fallback para iOS */
+  max-height: calc(var(--vh, 1vh) * 100 - 80px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling en iOS */
+  /* Asegurar que el menú esté por encima de todo */
+  z-index: 9999;
+  position: relative;
+}
+
+/* CRÍTICO: Fix específico para página de inicio - el nav debe estar sobre hero */
+#navbar {
+  /* Asegurar que el navbar esté SIEMPRE por encima del contenido de la página */
+  position: sticky !important;
+  top: 0;
+  z-index: 10000 !important;
+  isolation: isolate;
+  /* Prevent transform contexts from affecting z-index */
+  will-change: auto;
+}
+
+/* Fix para iOS: evitar que hero content interfiera con header clicks */
+#page-home header,
+#page-home .page-content {
+  /* Prevenir que el hero "tape" el navbar */
+  position: relative;
+  z-index: 1;
+  /* Asegurar que elementos del hero no interfieran con clicks del navbar */
+  pointer-events: auto;
+}
+
+/* Asegurar que los botones del navbar sean clicables incluso en iOS */
+#navbar button,
+#navbar a,
+#menu-toggle {
+  position: relative;
+  z-index: 10001;
+  /* Touch target mínimo para iOS */
+  min-width: 44px;
+  min-height: 44px;
+  /* Asegurar que sean clicables */
+  pointer-events: auto !important;
+  /* Mejorar el área de touch en iOS */
+  -webkit-tap-highlight-color: rgba(0,0,0,0.1);
+}
+
+/* iOS-specific fixes for home page overlays and hero sections */
+#page-home header::before,
+#page-home .hero::before,
+#page-home .hero > .overlay,
+#page-home .banner-overlay,
+#page-home section:first-of-type::before {
+  pointer-events: none !important;
+}
+
+/* Remove transform contexts that can interfere with z-index stacking */
+#page-home .page-wrapper,
+#page-home header,
+#page-home .hero,
+#page-home .slider,
+#page-home .banner {
+  transform: none !important;
+  filter: none !important;
+  perspective: none !important;
+}
+
+/* iOS viewport height fixes using --vh custom property */
+#page-home header {
+  min-height: calc(var(--vh, 1vh) * 50);
+}
+
+@supports (height: 100dvh) {
+  #page-home header {
+    min-height: 50dvh;
+  }
+}
+
+/* Menu overlay/panel and scroll lock (class-based simple system) */
+#menu-overlay {
+  /* Hidden by default */
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+#menu-overlay.is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+#mobile-menu {
+  /* Off-canvas by default using translateX */
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+}
+
+#mobile-menu.is-open {
+  transform: translateX(0%);
+}
+
+/* Prevent body scroll when menu is open */
+body.menu-open {
+  overflow: hidden;
+  touch-action: none;
+}
+
+/* Mejoras para el botón del menú móvil */
+#menu-toggle {
+  /* Mejor área de tap para móviles */
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Feedback visual mejorado */
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+#menu-toggle:active {
+  transform: scale(0.95);
+  opacity: 0.7;
+}
+
+#menu-toggle i {
+  transition: transform 0.3s ease;
+}
+
+/* Remove previous slide up/down keyframes system to avoid conflicts */
+
+/* Mejoras específicas para iOS Safari */
+@supports (-webkit-touch-callout: none) {
+  /* Esto solo se aplica en iOS Safari */
+  body {
+    /* Fix para el bounce scroll en iOS */
+    -webkit-overflow-scrolling: touch;
+    overflow-x: hidden;
+  }
+  
+  /* Fix para inputs en iOS */
+  input, textarea, select {
+    -webkit-appearance: none;
+    appearance: none;
+    border-radius: 0;
+  }
+  
+  /* Fix para el menú en iOS */
+  #mobile-menu {
+    -webkit-transform: translate3d(0,0,0);
+    transform: translate3d(0,0,0);
+  }
+}
+
+/* Estilos para el formulario de contacto */
+#crmWebToEntityForm {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Media queries para responsividad */
+@media (max-width: 768px) {
+  .whatsapp-float {
+    width: 50px;
+    height: 50px;
+    bottom: 20px;
+    right: 20px;
+    font-size: 25px;
+  }
+}
+
+/* Utilidades varias */
+.clip-path-diagonal { clip-path: polygon(30% 0, 100% 0, 100% 100%, 0% 100%); }
+
+/* Carrusel de Promociones (Swiper) */
+#promotions-carousel { position: relative; overflow: hidden; }
+#promotions-carousel .swiper-wrapper { align-items: stretch; }
+#promotions-carousel .swiper-slide { height: auto; }
+
+#promotions-carousel .swiper-pagination { position: relative; display: flex; justify-content: center; gap: 8px; margin-top: 16px; }
+#promotions-carousel .swiper-pagination-bullet { background: #009688; opacity: 0.3; width: 12px; height: 12px; transition: all 0.3s ease; }
+#promotions-carousel .swiper-pagination-bullet-active { background: #ff7043; opacity: 1; transform: scale(1.1); }
+
+#promotions-carousel .swiper-button-prev, #promotions-carousel .swiper-button-next {
+  position: relative; color: #009688; background: #fff; border-radius: 50%; width: 44px; height: 44px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center;
+}
+#promotions-carousel .swiper-button-prev:hover, #promotions-carousel .swiper-button-next:hover { background: #009688; color: #fff; transform: scale(1.05); }
+#promotions-carousel .swiper-button-prev:after, #promotions-carousel .swiper-button-next:after { font-size: 16px; font-weight: bold; }
