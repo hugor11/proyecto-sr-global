@@ -99,18 +99,13 @@ function setVH() {
         // Scroll del body
         document.body.style.overflow = isOpen ? 'hidden' : '';
 
-        // Panel: usar transform translate
+        // Panel y Overlay: usar clase 'active'
         if (isOpen) {
-            panel.classList.remove('translate-x-full');
+            panel.classList.add('active');
+            overlay.classList.add('active');
         } else {
-            panel.classList.add('translate-x-full');
-        }
-
-        // Overlay: mostrar/ocultar
-        if (isOpen) {
-            overlay.classList.remove('hidden');
-        } else {
-            overlay.classList.add('hidden');
+            panel.classList.remove('active');
+            overlay.classList.remove('active');
         }
 
         // Icono

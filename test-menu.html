@@ -39,10 +39,10 @@
     </nav>
 
     <!-- Overlay -->
-    <div id="menu-overlay" class="fixed inset-0 bg-black/50 hidden"></div>
+    <div id="menu-overlay"></div>
 
     <!-- Panel del menú -->
-    <div id="mobile-menu" class="fixed top-0 right-0 bottom-0 w-80 max-w-full bg-white shadow-2xl transform translate-x-full transition-transform duration-300 overflow-y-auto">
+    <div id="mobile-menu">
         <div class="p-6">
             <button id="menu-close" class="absolute top-4 right-4 p-2 text-gray-700" aria-label="Cerrar">
                 <i class="fas fa-times text-2xl"></i>
@@ -83,16 +83,16 @@
             const menuClasses = menu.className;
             const overlayClasses = overlay.className;
             const zIndex = window.getComputedStyle(menu).zIndex;
-            const transform = window.getComputedStyle(menu).transform;
+            const right = window.getComputedStyle(menu).right;
             const visibility = window.getComputedStyle(menu).visibility;
-            const display = window.getComputedStyle(menu).display;
+            const opacity = window.getComputedStyle(overlay).opacity;
 
             info.innerHTML = `
                 MenuZ: ${zIndex}<br>
-                Transform: ${transform}<br>
+                Right: ${right}<br>
                 Visibility: ${visibility}<br>
-                Display: ${display}<br>
-                HasTranslateFull: ${menuClasses.includes('translate-x-full')}<br>
+                OverlayOpacity: ${opacity}<br>
+                HasActive: ${menuClasses.includes('active')}<br>
                 UserAgent: ${navigator.userAgent.substring(0, 30)}...
             `;
         }
@@ -102,12 +102,12 @@
             document.body.style.overflow = isOpen ? 'hidden' : '';
 
             if (isOpen) {
-                menu.classList.remove('translate-x-full');
-                overlay.classList.remove('hidden');
+                menu.classList.add('active');
+                overlay.classList.add('active');
                 menuStateEl.textContent = 'Abierto ✅';
             } else {
-                menu.classList.add('translate-x-full');
-                overlay.classList.add('hidden');
+                menu.classList.remove('active');
+                overlay.classList.remove('active');
                 menuStateEl.textContent = 'Cerrado ❌';
             }
 

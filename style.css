@@ -241,32 +241,47 @@ body {
   }
 }
 
-/* Sistema de menú móvil simplificado */
+/* ============================================================================
+   MENÚ MÓVIL - Sistema limpio y simple para iOS y Android
+   ============================================================================ */
+
+/* Overlay oscuro de fondo */
 #menu-overlay {
-  /* El overlay se controla con la clase 'hidden' de Tailwind */
-  transition: opacity 0.3s ease;
-  z-index: 9998 !important; /* Más alto que navbar */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9998;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
+#menu-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Panel del menú móvil */
 #mobile-menu {
-  /* CRÍTICO: Usar right position en lugar de transform para Android */
-  left: auto !important;
-  z-index: 9999 !important; /* Más alto que overlay y navbar */
-  /* Transición suave para el movimiento */
-  transition: right 0.3s ease-in-out !important;
+  position: fixed;
+  top: 0;
+  right: -100%;
+  bottom: 0;
+  width: 320px;
+  max-width: 85vw;
+  background-color: white;
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+  overflow-y: auto;
+  transition: right 0.3s ease;
+  -webkit-overflow-scrolling: touch;
 }
 
-/* Cuando está cerrado, mover completamente fuera */
-#mobile-menu.translate-x-full {
-  right: -100% !important; /* Usar 100% del ancho del menú */
-  /* Fallback: también esconder visualmente */
-  visibility: hidden !important;
-}
-
-/* Cuando está abierto, posicionar en right: 0 */
-#mobile-menu:not(.translate-x-full) {
-  right: 0 !important;
-  visibility: visible !important;
+#mobile-menu.active {
+  right: 0;
 }
 
 /* Botón del menú móvil con mejor área táctil */
@@ -279,60 +294,6 @@ body {
 
 [data-menu-toggle]:active {
   opacity: 0.7;
-}
-
-/* Mejoras específicas para iOS Safari */
-@supports (-webkit-touch-callout: none) {
-  /* Esto solo se aplica en iOS Safari */
-  body {
-    /* Fix para el bounce scroll en iOS */
-    -webkit-overflow-scrolling: touch;
-    overflow-x: hidden;
-  }
-
-  /* Fix para inputs en iOS */
-  input, textarea, select {
-    -webkit-appearance: none;
-    appearance: none;
-    border-radius: 0;
-  }
-
-  /* Fix para el menú en iOS */
-  #mobile-menu {
-    -webkit-transform: translate3d(0,0,0);
-    transform: translate3d(0,0,0);
-  }
-}
-
-/* Fix para navegadores Samsung y otros navegadores móviles */
-/* NO usar transform translateX, usar right position en su lugar (ver arriba) */
-#mobile-menu.translate-x-full {
-  /* Reset transform de Tailwind */
-  transform: none !important;
-  -webkit-transform: none !important;
-}
-
-#mobile-menu:not(.translate-x-full) {
-  /* Reset transform de Tailwind */
-  transform: none !important;
-  -webkit-transform: none !important;
-}
-
-/* Fix crítico para Android - Forzar aceleración por hardware */
-#mobile-menu {
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  will-change: transform;
-  /* La visibility se controla con las clases .translate-x-full */
-}
-
-#menu-overlay {
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
 }
 
 /* Estilos para el formulario de contacto */
