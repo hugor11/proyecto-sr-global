@@ -241,60 +241,29 @@ body {
   }
 }
 
-/* Menu overlay/panel and scroll lock (class-based simple system) */
+/* Sistema de menú móvil simplificado */
 #menu-overlay {
-  /* Hidden by default */
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition: opacity 0.25s ease, visibility 0.25s ease;
-}
-
-#menu-overlay.is-visible {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
+  /* El overlay se controla con la clase 'hidden' de Tailwind */
+  transition: opacity 0.3s ease;
 }
 
 #mobile-menu {
-  /* Off-canvas by default using translateX */
-  transform: translateX(100%);
-  transition: transform 0.3s ease;
+  /* El panel usa transform translate-x controlado por Tailwind */
+  /* translate-x-full = oculto a la derecha */
+  /* translate-x-0 = visible */
 }
 
-#mobile-menu.is-open {
-  transform: translateX(0%);
-}
-
-/* Prevent body scroll when menu is open */
-body.menu-open {
-  overflow: hidden;
-  touch-action: none;
-}
-
-/* Mejoras para el botón del menú móvil */
-#menu-toggle {
-  /* Mejor área de tap para móviles */
+/* Botón del menú móvil con mejor área táctil */
+[data-menu-toggle] {
   min-width: 44px;
   min-height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* Feedback visual mejorado */
-  transition: all 0.2s ease;
   cursor: pointer;
+  transition: opacity 0.2s ease;
 }
 
-#menu-toggle:active {
-  transform: scale(0.95);
+[data-menu-toggle]:active {
   opacity: 0.7;
 }
-
-#menu-toggle i {
-  transition: transform 0.3s ease;
-}
-
-/* Remove previous slide up/down keyframes system to avoid conflicts */
 
 /* Mejoras específicas para iOS Safari */
 @supports (-webkit-touch-callout: none) {

@@ -85,7 +85,7 @@
           <div class="flex items-center ml-6">
             <a href="contact.html" class="bg-brand-orange text-white font-bold py-2 px-5 rounded-lg hover:bg-opacity-90 transition-all hover:scale-105" data-lang-key="navContactBtn">Contactar</a>
             
-            <button id="menu-toggle" data-menu-toggle aria-expanded="false" class="ml-4 text-gray-700 md:hidden focus:outline-none">
+            <button data-menu-toggle aria-expanded="false" class="ml-4 text-gray-700 md:hidden focus:outline-none">
               <i class="fas fa-bars text-2xl"></i>
             </button>
           </div>
@@ -94,87 +94,25 @@
     </div>
   </nav>
 
-  <!-- Overlay (backdrop oscuro) FUERA del <nav> -->
-  <div id="menu-overlay" data-menu-overlay class="fixed inset-0 bg-black bg-opacity-50 z-40" aria-hidden="true"></div>
+  <!-- Overlay fuera del nav -->
+  <div id="menu-overlay" class="fixed inset-0 bg-black/50 hidden z-40"></div>
 
-  <!-- Panel del menú móvil FUERA del <nav> -->
-  <div 
-    id="mobile-menu" 
-    data-menu-panel 
-    class="fixed top-0 right-0 bottom-0 w-80 max-w-full bg-white shadow-2xl z-50 overflow-y-auto"
-    role="dialog"
-    aria-modal="true"
-    aria-label="Menú de navegación"
-  >
+  <!-- Panel del menú móvil -->
+  <div id="mobile-menu" class="fixed top-0 right-0 bottom-0 w-80 max-w-full bg-white shadow-2xl z-50 transform translate-x-full transition-transform duration-300 overflow-y-auto">
     <div class="p-6">
-      <!-- UN SOLO botón de cerrar -->
-      <button 
-        data-menu-close 
-        type="button"
-        class="absolute top-4 right-4 p-2 text-gray-700 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500 rounded-lg transition-colors z-10"
-        aria-label="Cerrar menú"
-      >
+      <button id="menu-close" class="absolute top-4 right-4 p-2 text-gray-700 hover:text-gray-900 focus:outline-none" aria-label="Cerrar menú">
         <i class="fas fa-times text-2xl"></i>
       </button>
-      
-      <!-- Navegación -->
-      <nav class="mt-12 space-y-3">
-        <a 
-          class="block py-3 px-4 hover:bg-gray-100 rounded-md hover:text-orange-600 transition-colors text-lg font-medium" 
-          data-lang-key="navHome" 
-          href="index.html"
-        >
-          🏠 Inicio
-        </a>
-        <a 
-          class="block py-3 px-4 hover:bg-gray-100 rounded-md hover:text-orange-600 transition-colors text-lg font-medium" 
-          data-lang-key="navPromotions" 
-          href="promotions.html"
-        >
-          🎁 Promociones
-        </a>
-        <a 
-          class="block py-3 px-4 hover:bg-gray-100 rounded-md hover:text-orange-600 transition-colors text-lg font-medium" 
-          data-lang-key="navExperiences" 
-          href="experiences.html"
-        >
-          ✈️ Experiencias
-        </a>
-        <a 
-          class="block py-3 px-4 hover:bg-gray-100 rounded-md hover:text-orange-600 transition-colors text-lg font-medium" 
-          data-lang-key="navRomance" 
-          href="romance.html"
-        >
-          💕 Romance
-        </a>
-        <a 
-          class="block py-3 px-4 hover:bg-gray-100 rounded-md hover:text-orange-600 transition-colors text-lg font-medium" 
-          data-lang-key="navDestinations" 
-          href="destinations.html"
-        >
-          🌍 Destinos
-        </a>
-        <a 
-          class="block py-3 px-4 hover:bg-gray-100 rounded-md hover:text-orange-600 transition-colors text-lg font-medium" 
-          data-lang-key="navGroups" 
-          href="groups.html"
-        >
-          👥 Grupos y Convenciones
-        </a>
-        <a 
-          class="block py-3 px-4 hover:bg-gray-100 rounded-md hover:text-orange-600 transition-colors text-lg font-medium" 
-          data-lang-key="navAbout" 
-          href="about.html"
-        >
-          ℹ️ Nosotros
-        </a>
-        <a 
-          class="block py-3 px-4 hover:bg-gray-100 rounded-md hover:text-orange-600 transition-colors text-lg font-medium" 
-          data-lang-key="navContact" 
-          href="contact.html"
-        >
-          📧 Contacto
-        </a>
+
+      <nav class="mt-16 space-y-3">
+        <a href="index.html" class="block py-3 px-4 hover:bg-gray-100 rounded-md hover:text-brand-orange transition-colors text-lg font-medium">🏠 Inicio</a>
+        <a href="promotions.html" class="block py-3 px-4 hover:bg-gray-100 rounded-md hover:text-brand-orange transition-colors text-lg font-medium">🎁 Promociones</a>
+        <a href="experiences.html" class="block py-3 px-4 hover:bg-gray-100 rounded-md hover:text-brand-orange transition-colors text-lg font-medium">🎯 Experiencias</a>
+        <a href="romance.html" class="block py-3 px-4 hover:bg-gray-100 rounded-md hover:text-brand-orange transition-colors text-lg font-medium">💕 Romance</a>
+        <a href="destinations.html" class="block py-3 px-4 hover:bg-gray-100 rounded-md hover:text-brand-orange transition-colors text-lg font-medium">✈️ Destinos</a>
+        <a href="groups.html" class="block py-3 px-4 hover:bg-gray-100 rounded-md hover:text-brand-orange transition-colors text-lg font-medium">👥 Grupos</a>
+        <a href="about.html" class="block py-3 px-4 hover:bg-gray-100 rounded-md hover:text-brand-orange transition-colors text-lg font-medium">ℹ️ Nosotros</a>
+        <a href="contact.html" class="block py-3 px-4 hover:bg-gray-100 rounded-md hover:text-brand-orange transition-colors text-lg font-medium">📧 Contacto</a>
       </nav>
     </div>
   </div>

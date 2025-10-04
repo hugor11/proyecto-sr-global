@@ -85,27 +85,39 @@ function setVH() {
   
     function setMenuState(isOpen) {
         const btn = document.querySelector('[data-menu-toggle]');
-        const panel = document.querySelector('#mobile-menu') || document.querySelector('[data-menu-panel]');
-        const overlay = document.querySelector('#menu-overlay') || document.querySelector('[data-menu-overlay]');
+        const panel = document.getElementById('mobile-menu');
+        const overlay = document.getElementById('menu-overlay');
+
         if (!btn || !panel || !overlay) {
-            console.warn('⚠️ Faltan elementos del menú (btn/panel/overlay)');
+            console.warn('⚠️ Faltan elementos del menú');
             return;
         }
 
         // ARIA
         btn.setAttribute('aria-expanded', String(isOpen));
-        btn.setAttribute('aria-label', isOpen ? 'Cerrar menú' : 'Abrir menú');
 
-        // Clase en body para bloquear scroll
-        document.body.classList.toggle('menu-open', isOpen);
+        // Scroll del body
+        document.body.style.overflow = isOpen ? 'hidden' : '';
 
-        // Panel/overlay usando clases simples
-        panel.classList.toggle('is-open', isOpen);
-        overlay.classList.toggle('is-visible', isOpen);
+        // Panel: usar transform translate
+        if (isOpen) {
+            panel.classList.remove('translate-x-full');
+        } else {
+            panel.classList.add('translate-x-full');
+        }
+
+        // Overlay: mostrar/ocultar
+        if (isOpen) {
+            overlay.classList.remove('hidden');
+        } else {
+            overlay.classList.add('hidden');
+        }
 
         // Icono
         const icon = btn.querySelector('i');
-        if (icon) icon.className = isOpen ? 'fas fa-times text-2xl' : 'fas fa-bars text-2xl';
+        if (icon) {
+            icon.className = isOpen ? 'fas fa-times text-2xl' : 'fas fa-bars text-2xl';
+        }
 
         console.log(isOpen ? '✅ Menú abierto' : '✅ Menú cerrado');
     }
@@ -119,39 +131,31 @@ function setVH() {
     const { signal } = menuController;
     
     console.log('✅ Inicializando menú móvil...');
-    
-    // 🧹 Limpieza de duplicados
-    const panel = document.querySelector('[data-menu-panel]');
-    if (panel) {
-      const closeBtns = panel.querySelectorAll('[data-menu-close]');
-      if (closeBtns.length > 1) {
-        console.warn(`⚠️ ${closeBtns.length} botones de cerrar, eliminando duplicados`);
-        closeBtns.forEach((btn, i) => {
-          if (i > 0) btn.remove();
-        });
+
+    // Listener principal
+    document.addEventListener('click', (e) => {
+      // Cerrar al hacer clic en enlaces del menú
+      const link = e.target.closest('#mobile-menu a[href]');
+      if (link) {
+        console.log('📍 Navegando a:', link.href);
+        setMenuState(false);
+        return;
       }
-    }
-    
-        // 🎯 Listener principal (simple, sin capture y sin bloquear enlaces)
-            document.addEventListener('click', (e) => {
-                const link = e.target.closest('#mobile-menu a[href]');
-                if (link) {
-                    setMenuState(false);
-                    return;
-                }
 
-            if (e.target.closest('[data-menu-toggle]')) {
-                const btn = e.target.closest('[data-menu-toggle]');
-                const isOpen = btn.getAttribute('aria-expanded') === 'true';
-                setMenuState(!isOpen);
-                return;
-            }
+      // Toggle del menú
+      if (e.target.closest('[data-menu-toggle]')) {
+        const btn = e.target.closest('[data-menu-toggle]');
+        const isOpen = btn.getAttribute('aria-expanded') === 'true';
+        setMenuState(!isOpen);
+        return;
+      }
 
-            if (e.target.closest('[data-menu-close]') || e.target.closest('#menu-overlay')) {
-                setMenuState(false);
-                return;
-            }
-        }, { signal });
+      // Cerrar con botón X o clic en overlay
+      if (e.target.closest('#menu-close') || e.target.closest('#menu-overlay')) {
+        setMenuState(false);
+        return;
+      }
+    }, { signal });
     
     // � Cerrar con Escape
     document.addEventListener('keydown', (e) => {
@@ -165,7 +169,7 @@ function setVH() {
       }
     }, { signal });
     
-    console.log('✅ Menú inicializado correctamente');
+    console.log('✅ Menú inicializado');
   }
   
   // Función principal de inicialización
