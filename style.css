@@ -249,13 +249,21 @@ body {
 }
 
 #mobile-menu {
-  /* CRÍTICO: Fijar el menú al lado derecho de forma explícita */
-  right: 0 !important;
+  /* CRÍTICO: Usar right position en lugar de transform para Android */
   left: auto !important;
   z-index: 9999 !important; /* Más alto que overlay y navbar */
-  /* El panel usa transform translate-x controlado por Tailwind */
-  /* translate-x-full = oculto a la derecha */
-  /* translate-x-0 = visible */
+  /* Transición suave para el movimiento */
+  transition: right 0.3s ease-in-out !important;
+}
+
+/* Cuando está cerrado, mover completamente fuera */
+#mobile-menu.translate-x-full {
+  right: -320px !important; /* Ancho del menú (w-80 = 320px) */
+}
+
+/* Cuando está abierto, posicionar en right: 0 */
+#mobile-menu:not(.translate-x-full) {
+  right: 0 !important;
 }
 
 /* Botón del menú móvil con mejor área táctil */
@@ -294,16 +302,17 @@ body {
 }
 
 /* Fix para navegadores Samsung y otros navegadores móviles */
+/* NO usar transform translateX, usar right position en su lugar (ver arriba) */
 #mobile-menu.translate-x-full {
-  /* Asegurar que se mueva 100% hacia la derecha cuando está cerrado */
-  transform: translateX(100%) !important;
-  -webkit-transform: translateX(100%) !important;
+  /* Reset transform de Tailwind */
+  transform: none !important;
+  -webkit-transform: none !important;
 }
 
 #mobile-menu:not(.translate-x-full) {
-  /* Asegurar que esté en posición 0 cuando está abierto */
-  transform: translateX(0) !important;
-  -webkit-transform: translateX(0) !important;
+  /* Reset transform de Tailwind */
+  transform: none !important;
+  -webkit-transform: none !important;
 }
 
 /* Fix crítico para Android - Forzar aceleración por hardware y visibilidad */
