@@ -248,6 +248,9 @@ body {
 }
 
 #mobile-menu {
+  /* CRÍTICO: Fijar el menú al lado derecho de forma explícita */
+  right: 0 !important;
+  left: auto !important;
   /* El panel usa transform translate-x controlado por Tailwind */
   /* translate-x-full = oculto a la derecha */
   /* translate-x-0 = visible */
@@ -273,19 +276,32 @@ body {
     -webkit-overflow-scrolling: touch;
     overflow-x: hidden;
   }
-  
+
   /* Fix para inputs en iOS */
   input, textarea, select {
     -webkit-appearance: none;
     appearance: none;
     border-radius: 0;
   }
-  
+
   /* Fix para el menú en iOS */
   #mobile-menu {
     -webkit-transform: translate3d(0,0,0);
     transform: translate3d(0,0,0);
   }
+}
+
+/* Fix para navegadores Samsung y otros navegadores móviles */
+#mobile-menu.translate-x-full {
+  /* Asegurar que se mueva 100% hacia la derecha cuando está cerrado */
+  transform: translateX(100%) !important;
+  -webkit-transform: translateX(100%) !important;
+}
+
+#mobile-menu:not(.translate-x-full) {
+  /* Asegurar que esté en posición 0 cuando está abierto */
+  transform: translateX(0) !important;
+  -webkit-transform: translateX(0) !important;
 }
 
 /* Estilos para el formulario de contacto */
