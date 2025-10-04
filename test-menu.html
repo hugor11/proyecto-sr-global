@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Menú Móvil - Android</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.min.css?v=2">
+    <style>
+        #debug-info {
+            position: fixed;
+            top: 70px;
+            left: 10px;
+            background: yellow;
+            padding: 10px;
+            font-size: 12px;
+            z-index: 10000;
+            max-width: 300px;
+        }
+    </style>
+</head>
+<body class="font-sans bg-gray-50">
+
+    <!-- Debug Info -->
+    <div id="debug-info">
+        <strong>Debug Info:</strong><br>
+        <span id="info"></span>
+    </div>
+
+    <!-- Navbar simplificado -->
+    <nav id="navbar" class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <span class="font-bold text-gray-800">Test Menú</span>
+            <button data-menu-toggle aria-expanded="false" class="text-gray-700 focus:outline-none">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Overlay -->
+    <div id="menu-overlay" class="fixed inset-0 bg-black/50 hidden"></div>
+
+    <!-- Panel del menú -->
+    <div id="mobile-menu" class="fixed top-0 right-0 bottom-0 w-80 max-w-full bg-white shadow-2xl transform translate-x-full transition-transform duration-300 overflow-y-auto">
+        <div class="p-6">
+            <button id="menu-close" class="absolute top-4 right-4 p-2 text-gray-700" aria-label="Cerrar">
+                <i class="fas fa-times text-2xl"></i>
+            </button>
+            <nav class="mt-16 space-y-3">
+                <a href="#" class="block py-3 px-4 bg-gray-100 rounded-md text-lg font-medium">🏠 Test 1</a>
+                <a href="#" class="block py-3 px-4 bg-gray-100 rounded-md text-lg font-medium">🎁 Test 2</a>
+                <a href="#" class="block py-3 px-4 bg-gray-100 rounded-md text-lg font-medium">🎯 Test 3</a>
+            </nav>
+        </div>
+    </div>
+
+    <main class="p-6">
+        <h1 class="text-2xl font-bold mb-4">Test del Menú Móvil</h1>
+        <p class="mb-4">Presiona el botón de hamburguesa arriba para probar el menú.</p>
+
+        <div class="bg-white p-4 rounded shadow mb-4">
+            <h2 class="font-bold mb-2">Estado del menú:</h2>
+            <p id="menu-state">Cerrado</p>
+        </div>
+
+        <button onclick="forceOpenMenu()" class="bg-blue-500 text-white px-4 py-2 rounded mb-2">
+            Forzar Abrir Menú
+        </button>
+        <button onclick="forceCloseMenu()" class="bg-red-500 text-white px-4 py-2 rounded">
+            Forzar Cerrar Menú
+        </button>
+    </main>
+
+    <script>
+        const info = document.getElementById('info');
+        const menuStateEl = document.getElementById('menu-state');
+        const menu = document.getElementById('mobile-menu');
+        const overlay = document.getElementById('menu-overlay');
+        const btn = document.querySelector('[data-menu-toggle]');
+
+        function updateDebug() {
+            const menuClasses = menu.className;
+            const overlayClasses = overlay.className;
+            const zIndex = window.getComputedStyle(menu).zIndex;
+            const transform = window.getComputedStyle(menu).transform;
+            const visibility = window.getComputedStyle(menu).visibility;
+            const display = window.getComputedStyle(menu).display;
+
+            info.innerHTML = `
+                MenuZ: ${zIndex}<br>
+                Transform: ${transform}<br>
+                Visibility: ${visibility}<br>
+                Display: ${display}<br>
+                HasTranslateFull: ${menuClasses.includes('translate-x-full')}<br>
+                UserAgent: ${navigator.userAgent.substring(0, 30)}...
+            `;
+        }
+
+        function setMenuState(isOpen) {
+            btn.setAttribute('aria-expanded', String(isOpen));
+            document.body.style.overflow = isOpen ? 'hidden' : '';
+
+            if (isOpen) {
+                menu.classList.remove('translate-x-full');
+                overlay.classList.remove('hidden');
+                menuStateEl.textContent = 'Abierto ✅';
+            } else {
+                menu.classList.add('translate-x-full');
+                overlay.classList.add('hidden');
+                menuStateEl.textContent = 'Cerrado ❌';
+            }
+
+            updateDebug();
+        }
+
+        function forceOpenMenu() {
+            setMenuState(true);
+        }
+
+        function forceCloseMenu() {
+            setMenuState(false);
+        }
+
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('[data-menu-toggle]')) {
+                const isOpen = btn.getAttribute('aria-expanded') === 'true';
+                setMenuState(!isOpen);
+            }
+
+            if (e.target.closest('#menu-close') || e.target.closest('#menu-overlay')) {
+                setMenuState(false);
+            }
+        });
+
+        // Actualizar debug cada segundo
+        setInterval(updateDebug, 1000);
+        updateDebug();
+    </script>
+</body>
+</html>

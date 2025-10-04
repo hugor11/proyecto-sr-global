@@ -245,12 +245,14 @@ body {
 #menu-overlay {
   /* El overlay se controla con la clase 'hidden' de Tailwind */
   transition: opacity 0.3s ease;
+  z-index: 9998 !important; /* Más alto que navbar */
 }
 
 #mobile-menu {
   /* CRÍTICO: Fijar el menú al lado derecho de forma explícita */
   right: 0 !important;
   left: auto !important;
+  z-index: 9999 !important; /* Más alto que overlay y navbar */
   /* El panel usa transform translate-x controlado por Tailwind */
   /* translate-x-full = oculto a la derecha */
   /* translate-x-0 = visible */
@@ -302,6 +304,25 @@ body {
   /* Asegurar que esté en posición 0 cuando está abierto */
   transform: translateX(0) !important;
   -webkit-transform: translateX(0) !important;
+}
+
+/* Fix crítico para Android - Forzar aceleración por hardware y visibilidad */
+#mobile-menu {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  will-change: transform;
+  /* Asegurar que sea visible cuando está abierto */
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+#menu-overlay {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
 /* Estilos para el formulario de contacto */
