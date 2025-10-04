@@ -258,12 +258,15 @@ body {
 
 /* Cuando está cerrado, mover completamente fuera */
 #mobile-menu.translate-x-full {
-  right: -320px !important; /* Ancho del menú (w-80 = 320px) */
+  right: -100% !important; /* Usar 100% del ancho del menú */
+  /* Fallback: también esconder visualmente */
+  visibility: hidden !important;
 }
 
 /* Cuando está abierto, posicionar en right: 0 */
 #mobile-menu:not(.translate-x-full) {
   right: 0 !important;
+  visibility: visible !important;
 }
 
 /* Botón del menú móvil con mejor área táctil */
@@ -315,16 +318,14 @@ body {
   -webkit-transform: none !important;
 }
 
-/* Fix crítico para Android - Forzar aceleración por hardware y visibilidad */
+/* Fix crítico para Android - Forzar aceleración por hardware */
 #mobile-menu {
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   will-change: transform;
-  /* Asegurar que sea visible cuando está abierto */
-  visibility: visible !important;
-  opacity: 1 !important;
+  /* La visibility se controla con las clases .translate-x-full */
 }
 
 #menu-overlay {
